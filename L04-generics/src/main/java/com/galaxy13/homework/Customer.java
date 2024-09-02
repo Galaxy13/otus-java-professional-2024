@@ -13,6 +13,12 @@ public class Customer {
         this.scores = scores;
     }
 
+    public Customer(Customer customer) {
+        this.id = customer.getId();
+        this.name = customer.getName();
+        this.scores = customer.getScores();
+    }
+
     public long getId() {
         return id;
     }
