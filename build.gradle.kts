@@ -1,7 +1,7 @@
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
-import org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
-import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
 import name.remal.gradle_plugins.sonarlint.SonarLintExtension
+import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
+import org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
 
 plugins {
     idea
@@ -83,6 +83,15 @@ subprojects {
         nodeJs {
             detectNodeJs = false
             logNodeJsNotFound = false
+        }
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+        testLogging.showExceptions = true
+        reports {
+            junitXml.required.set(true)
+            html.required.set(true)
         }
     }
 }
