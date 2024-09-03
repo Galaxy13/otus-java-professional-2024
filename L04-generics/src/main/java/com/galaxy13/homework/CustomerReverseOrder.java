@@ -1,14 +1,14 @@
 package com.galaxy13.homework;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class CustomerReverseOrder {
 
-    private final List<Customer> customers;
+    private final Deque<Customer> customers;
 
     public CustomerReverseOrder() {
-        customers = new LinkedList<>();
+        customers = new ArrayDeque<>();
     }
 
     public void add(Customer customer) {
