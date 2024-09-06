@@ -21,7 +21,6 @@ public class TestStatistics {
         this.testClass = testClass;
     }
 
-
     public void addOkTest(String test) {
         tests.add(test);
         okCounter++;
@@ -44,5 +43,9 @@ public class TestStatistics {
         bw.write(String.format("Success: %s%n", okCounter));
         bw.write(String.format("Fail: %s%n", failCounter));
         bw.flush();
+    }
+
+    public boolean isFailed() {
+        return failCounter > 0;
     }
 }

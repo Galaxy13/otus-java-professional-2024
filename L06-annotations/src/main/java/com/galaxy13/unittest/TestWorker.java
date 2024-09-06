@@ -23,7 +23,7 @@ public class TestWorker {
 
     Logger logger = LoggerFactory.getLogger(TestWorker.class);
 
-    public void executeTestWork(String className) throws ClassNotFoundException,
+    public boolean executeTestWork(String className) throws ClassNotFoundException,
             AnnotaionsOverrideException,
             TestConstructorException,
             IOException {
@@ -50,6 +50,7 @@ public class TestWorker {
             }
         }
         statistics.out();
+        return statistics.isFailed();
     }
 
     private List<Method> getMethodAnnotatedWith(Class<?> clazz, Class<? extends Annotation> annotation) {

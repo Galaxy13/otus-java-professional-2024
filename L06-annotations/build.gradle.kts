@@ -9,8 +9,6 @@ tasks.withType(Test::class) {
 }
 
 tasks.register<JavaExec>("testCustom") {
-    dependsOn("build")
-
     val testDir = file("src/test/java")
     val testClasses = mutableListOf<String>()
 
@@ -30,10 +28,16 @@ tasks.register<JavaExec>("testCustom") {
             logger.lifecycle("No test classes found.")
             throw GradleException("Test execution failed: No test classes found.")
         }
-        args(*testClasses.toTypedArray())
+        args(testClasses)
     }
 
     doLast {
-        logger.lifecycle("Tests executed: ${testClasses.joinToString(", ")}")
+        logger.lifecycle("\nTests executed: ${testClasses.joinToString(", ")}")
+    }
+}
+
+tasks {
+    build {
+        dependsOn("testCustom")
     }
 }
