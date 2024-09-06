@@ -1,18 +1,24 @@
 package com.galaxy13.unittest;
 
-import com.galaxy13.unittest.annotaions.*;
-import com.galaxy13.unittest.exceptions.*;
-
+import com.galaxy13.unittest.annotaions.After;
+import com.galaxy13.unittest.annotaions.Before;
+import com.galaxy13.unittest.annotaions.Test;
+import com.galaxy13.unittest.annotaions.Unique;
+import com.galaxy13.unittest.exceptions.AnnotaionsOverrideException;
+import com.galaxy13.unittest.exceptions.MethodException;
+import com.galaxy13.unittest.exceptions.TestConstructorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-@SuppressWarnings({"java:S1854","java:S1481","java:S1066","java:S1186"})
 public class TestWorker {
 
     Logger logger = LoggerFactory.getLogger(TestWorker.class);
@@ -20,55 +26,78 @@ public class TestWorker {
     public void executeTestWork(String className) throws ClassNotFoundException,
             AnnotaionsOverrideException,
             TestConstructorException,
-            MethodException {
+            IOException {
         Class<?> clazz = Class.forName(className);
-        Constructor<?> constructor;
-        try {
-            constructor = clazz.getConstructor();
-        } catch (NoSuchMethodException e) {
-            logger.error(e.getMessage());
-            throw new TestConstructorException(clazz);
-        }
-        List<Method> before = getMethodAnnotatedWith(clazz, Before.class);
-        List<Method> after = getMethodAnnotatedWith(clazz, After.class);
+        TestStatistics statistics = new TestStatistics(clazz);
+        Constructor<?> constructor = getClassConstructor(clazz);
+        Optional<Method> before = getWrapperMethod(clazz, Before.class);
+        Optional<Method> after = getWrapperMethod(clazz, After.class);
         List<Method> test = getMethodAnnotatedWith(clazz, Test.class);
-        for (Method method : test) {
+        for (Method testMethod : test) {
+            Object testObject = instantiateTestObject(constructor, clazz);
             try {
-                executeTestFunction(constructor, method);
+                if (before.isPresent()) {
+                    before.get().invoke(testObject);
+                }
+                invokeMethod(testObject, testMethod);
+                if (after.isPresent()) {
+                    after.get().invoke(testObject);
+                }
+                statistics.addOkTest(testMethod.getName());
             } catch (Exception e) {
-                logger.warn("{:?}", e);
+                statistics.addFailTest(testMethod.getName(), e);
+                logger.warn("Exception in test execution: {}", e.getMessage());
             }
         }
+        statistics.out();
     }
 
-    private List<Method> getMethodAnnotatedWith(Class<?> clazz, Class<? extends Annotation> annotation) throws AnnotaionsOverrideException, MethodException {
+    private List<Method> getMethodAnnotatedWith(Class<?> clazz, Class<? extends Annotation> annotation) {
         List<Method> methods = new ArrayList<>();
         for (Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(annotation)) {
-                if (method.getParameterCount() > 0){
-                    MethodException e = new MethodException(method);
-                    logger.error(e.getMessage());
-                    throw e;
-                }
                 methods.add(method);
             }
-        }
-        if (annotation.isAnnotationPresent(Unique.class) && methods.size() > 1) {
-                AnnotaionsOverrideException e = new AnnotaionsOverrideException(annotation);
-                logger.error(e.getMessage());
-                throw e;
         }
         return methods;
     }
 
-    private void executeTestFunction(Constructor<?> constructor, Method testMethod) throws Exception{
-        testMethod.setAccessible(true);
-        Object testObject;
+    private void invokeMethod(Object instance, Method method) throws MethodException {
         try {
-            testObject = constructor.newInstance();
-        } catch (Exception e){
-            throw new TestConstructorException(constructor.getDeclaringClass());
+            method.invoke(instance);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new MethodException(e.getCause());
         }
-        testMethod.invoke(testObject);
+    }
+
+    private Constructor<?> getClassConstructor(Class<?> clazz) throws TestConstructorException {
+        try {
+            return clazz.getConstructor();
+        } catch (NoSuchMethodException e) {
+            logger.error("No such method: {}", e.getMessage());
+            throw new TestConstructorException(clazz);
+        }
+    }
+
+    private Object instantiateTestObject(Constructor<?> constructor, Class<?> clazz) throws TestConstructorException {
+        try {
+            return constructor.newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            logger.error("Error instantiating test object: {}", e.getMessage(), e);
+            throw new TestConstructorException(clazz);
+        }
+    }
+
+    private Optional<Method> getWrapperMethod(Class<?> clazz, Class<? extends Annotation> annotation) throws AnnotaionsOverrideException {
+        List<Method> methods = getMethodAnnotatedWith(clazz, annotation);
+        if (methods.isEmpty()) {
+            return Optional.empty();
+        } else if (annotation.isAnnotationPresent(Unique.class) && methods.size() > 1) {
+                AnnotaionsOverrideException e = new AnnotaionsOverrideException(annotation);
+                logger.error(e.getMessage());
+                throw e;
+        } else {
+            return Optional.of(methods.getFirst());
+        }
     }
 }
