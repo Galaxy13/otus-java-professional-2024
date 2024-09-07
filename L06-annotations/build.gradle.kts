@@ -1,7 +1,5 @@
 dependencies {
     implementation ("ch.qos.logback:logback-classic")
-
-    testImplementation("org.assertj:assertj-core")
 }
 
 tasks.withType(Test::class) {
@@ -20,7 +18,7 @@ tasks.register<JavaExec>("testCustom") {
             if (file.isFile && file.extension == "java") {
                 logger.debug("Found file!")
                 val relativePath = file.relativeTo(testDir).path
-                val className = relativePath.replace("/", ".").removeSuffix(".java")
+                val className = relativePath.replace("\\\\|/".toRegex(), ".").removeSuffix(".java")
                 testClasses.add(className)
             }
         }

@@ -1,17 +1,18 @@
-package com.galaxy13.unittest;
+package com.galaxy13.galaxytest;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("java:S106")
+
 public class TestStatistics {
     private final Class<?> testClass;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final List<String> tests = new ArrayList<>();
     private final Map<String, String> testMap = new HashMap<>();
     private int okCounter = 0;
@@ -33,16 +34,21 @@ public class TestStatistics {
         testMap.put(test, String.format("FAIL -> %s", e.getMessage()));
     }
 
-    public void out() throws IOException {
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        bw.write(String.format("%nTest class %s stats:%n", testClass.getName()));
+    public void out() {
+        logger.info("\r\nTest class {} stats:", testClass.getName());
         for (String test : tests) {
-            bw.write(String.format("\t- %s::%s%n", test, testMap.get(test)));
+            if (logger.isInfoEnabled()) {
+                String testResult = testMap.get(test);
+                if (testResult.equals("SUCCESS")) {
+                    logger.info("\t{}::{}", test, testResult);
+                } else {
+                    logger.warn("\t{}::{}", test, testResult);
+                }
+            }
         }
-        bw.write(String.format("Number of tests: %s%n", tests.size()));
-        bw.write(String.format("Success: %s%n", okCounter));
-        bw.write(String.format("Fail: %s%n", failCounter));
-        bw.flush();
+        logger.info("Number of tests: {}", tests.size());
+        logger.info("Success: {}", okCounter);
+        logger.info("Fail: {}", failCounter);
     }
 
     public boolean isFailed() {

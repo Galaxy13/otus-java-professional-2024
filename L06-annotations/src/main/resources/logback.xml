@@ -6,6 +6,16 @@
         </encoder>
     </appender>
 
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.galaxy13.galaxytest.TestStatistics" level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
     <root level="warn">
         <appender-ref ref="FILE"/>
     </root>

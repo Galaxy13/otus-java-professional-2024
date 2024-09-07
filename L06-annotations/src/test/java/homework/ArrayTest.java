@@ -1,12 +1,14 @@
 package homework;
 
-import com.galaxy13.unittest.annotaions.Before;
-import com.galaxy13.unittest.annotaions.Test;
+import com.galaxy13.galaxytest.annotaions.Before;
+import com.galaxy13.galaxytest.annotaions.GalaxyTest;
+import com.galaxy13.galaxytest.annotaions.Test;
 
-import static com.galaxy13.unittest.Assert.assertArraysEquals;
+import static com.galaxy13.galaxytest.Assert.assertArraysEquals;
 
 // S2187 - linter insists on using JUnit, unused - Idea analyzer
 @SuppressWarnings({"java:S2187", "unused"})
+@GalaxyTest
 public class ArrayTest {
     private int[] arr;
 
@@ -19,7 +21,7 @@ public class ArrayTest {
     }
 
     @Test
-    public void arrEqTest() throws Exception {
+    public void arrEqTest() {
         int[] arr2 = new int[10];
         for (int i = 0; i < arr2.length; i++) {
             arr2[i] = i;
@@ -28,7 +30,7 @@ public class ArrayTest {
     }
 
     //    @Test
-    public void arrNotEqTest() throws Exception {
+    public void arrNotEqTest() {
         int[] arr2 = new int[10];
         for (int i = 0; i < arr2.length; i++) {
             arr2[i] = i + 1;
