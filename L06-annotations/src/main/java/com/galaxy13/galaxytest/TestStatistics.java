@@ -1,18 +1,11 @@
 package com.galaxy13.galaxytest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class TestStatistics {
     private final Class<?> testClass;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final List<String> tests = new ArrayList<>();
     private final Map<String, String> testMap = new HashMap<>();
     private int okCounter = 0;
@@ -34,21 +27,17 @@ public class TestStatistics {
         testMap.put(test, String.format("FAIL -> %s", e.getMessage()));
     }
 
-    public void out() {
-        logger.info("\r\nTest class {} stats:", testClass.getName());
+    @Override
+    public String toString() {
+        StringJoiner joiner = new StringJoiner("\n");
+        joiner.add("\r\nTest class " + testClass.getName() + " stats:");
         for (String test : tests) {
-            if (logger.isInfoEnabled()) {
-                String testResult = testMap.get(test);
-                if (testResult.equals("SUCCESS")) {
-                    logger.info("\t{}::{}", test, testResult);
-                } else {
-                    logger.warn("\t{}::{}", test, testResult);
-                }
-            }
+            joiner.add("\t" + test + "::" + testMap.get(test));
         }
-        logger.info("Number of tests: {}", tests.size());
-        logger.info("Success: {}", okCounter);
-        logger.info("Fail: {}", failCounter);
+        joiner.add("Number of tests: " + tests.size());
+        joiner.add("Success: " + okCounter);
+        joiner.add("Fail: " + failCounter);
+        return joiner.toString();
     }
 
     public boolean isFailed() {

@@ -12,7 +12,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.galaxy13.galaxytest.TestStatistics" level="INFO">
+    <logger name="com.galaxy13.galaxytest.TestWorker" level="INFO">
         <appender-ref ref="STDOUT"/>
     </logger>
 

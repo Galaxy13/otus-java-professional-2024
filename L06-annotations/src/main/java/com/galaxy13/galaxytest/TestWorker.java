@@ -1,6 +1,7 @@
 package com.galaxy13.galaxytest;
 
 import com.galaxy13.galaxytest.annotaions.*;
+import com.galaxy13.galaxytest.exceptions.NotTestClass;
 import com.galaxy13.galaxytest.exceptions.TestConstructorException;
 import com.galaxy13.galaxytest.exceptions.annotations.AnnotaionsOverrideException;
 import com.galaxy13.galaxytest.exceptions.annotations.MultipleAnnotationsException;
@@ -21,11 +22,8 @@ public class TestWorker {
 
     private final Logger logger = LoggerFactory.getLogger(TestWorker.class);
 
-    public boolean executeTestWork(String className) throws ClassNotFoundException {
-        Class<?> clazz = Class.forName(className);
-        if (!clazz.isAnnotationPresent(GalaxyTest.class)) {
-            return false;
-        }
+    public boolean executeTestWork(String className) throws ClassNotFoundException, MethodInvocationException, NotTestClass {
+        Class<?> clazz = getTestClassFromName(className);
         TestStatistics statistics = new TestStatistics(clazz);
         Constructor<?> constructor = getClassConstructor(clazz);
         Optional<Method> before = getWrapperMethod(clazz, Before.class);
@@ -38,16 +36,19 @@ public class TestWorker {
                     invokeMethod(testObject, before.get());
                 }
                 invokeMethod(testObject, testMethod);
-                if (after.isPresent()) {
-                    invokeMethod(testObject, after.get());
-                }
                 statistics.addOkTest(testMethod.getName());
             } catch (MethodInvocationException e) {
                 statistics.addFailTest(testMethod.getName(), e);
                 logger.warn("Exception in test execution: {}", e.getMessage());
+            } finally {
+                if (after.isPresent()) {
+                    invokeMethod(testObject, after.get());
+                }
             }
         }
-        statistics.out();
+        if (logger.isInfoEnabled()) {
+            logger.info(statistics.toString());
+        }
         return statistics.isFailed();
     }
 
@@ -105,5 +106,13 @@ public class TestWorker {
         } else {
             return Optional.of(methods.getFirst());
         }
+    }
+
+    private Class<?> getTestClassFromName(String className) throws NotTestClass, ClassNotFoundException {
+        Class<?> clazz = Class.forName(className);
+        if (!clazz.isAnnotationPresent(GalaxyTest.class)) {
+            throw new NotTestClass();
+        }
+        return clazz;
     }
 }
