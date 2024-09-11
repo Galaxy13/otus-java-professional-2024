@@ -1,6 +1,8 @@
 rootProject.name = "otus-java-2024-pro"
 include("L01-gradle")
 include("L04-generics")
+include("L08-gc:homework")
+include("L08-gc:heap-finder")
 
 pluginManagement {
     val jgitver: String by settings
