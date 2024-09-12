@@ -1,4 +1,4 @@
-package ru.calculator;
+package com.galaxy13.homework;
 
 /*
 -Xms256m
@@ -20,8 +20,7 @@ public class CalcDemo {
     public static void main(String[] args) {
         long counter = 500_000_000;
         var summator = new Summator();
-        long startTime = System.currentTimeMillis();
-
+        long startTime = System.nanoTime();
         for (var idx = 0; idx < counter; idx++) {
             var data = new Data(idx);
             summator.calc(data);
@@ -31,7 +30,7 @@ public class CalcDemo {
             }
         }
 
-        long delta = System.currentTimeMillis() - startTime;
+        long delta = (System.nanoTime() - startTime) / 1_000_000;
         log.info("PrevValue:{}", summator.getPrevValue());
         log.info("PrevPrevValue:{}", summator.getPrevPrevValue());
         log.info("SumLastThreeValues:{}", summator.getSumLastThreeValues());
