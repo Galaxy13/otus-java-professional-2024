@@ -14,7 +14,7 @@ public class Summator {
         if (dataCounter == 100_000) {
             dataCounter = 0;
         }
-        int dataValue = data.getValue();
+        var dataValue = data.getValue();
         sum += dataValue;
 
         sumLastThreeValues = dataValue + prevValue + prevPrevValue;
@@ -22,7 +22,7 @@ public class Summator {
         prevPrevValue = prevValue;
         prevValue = dataValue;
 
-        int addValue = (sumLastThreeValues * sumLastThreeValues / (dataValue + 1) - sum);
+        var addValue = (sumLastThreeValues * sumLastThreeValues / (dataValue + 1) - sum);
 
         for (var idx = 0; idx < 3; idx++) {
             someValue += addValue;

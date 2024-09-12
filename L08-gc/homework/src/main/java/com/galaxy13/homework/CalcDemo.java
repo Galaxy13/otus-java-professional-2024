@@ -22,7 +22,7 @@ public class CalcDemo {
         var summator = new Summator();
         var data = new Data(0);
         long startTime = System.nanoTime();
-        for (var idx = 0; idx < counter; idx++) {
+        for (int idx = 0; idx < counter; idx++) {
             summator.calc(data);
             data.increment();
 
