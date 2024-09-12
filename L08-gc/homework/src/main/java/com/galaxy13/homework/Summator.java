@@ -14,7 +14,7 @@ public class Summator {
         if (dataCounter == 100_000) {
             dataCounter = 0;
         }
-        int dataValue = data.value();
+        int dataValue = data.getValue();
         sum += dataValue;
 
         sumLastThreeValues = dataValue + prevValue + prevPrevValue;

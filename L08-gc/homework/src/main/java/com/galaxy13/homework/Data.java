@@ -1,6 +1,6 @@
 package com.galaxy13.homework;
 
-public class Data(int value) {
+public class Data {
     private int value;
 
     public Data(int value){
