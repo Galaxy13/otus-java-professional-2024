@@ -1,6 +1,7 @@
 rootProject.name = "otus-java-2024-pro"
 include("L01-gradle")
 include("L04-generics")
+include("L06-annotations")
 include("L08-gc:homework")
 
 pluginManagement {
