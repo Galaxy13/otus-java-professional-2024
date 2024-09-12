@@ -20,10 +20,11 @@ public class CalcDemo {
     public static void main(String[] args) {
         long counter = 500_000_000;
         var summator = new Summator();
+        var data = new Data(0);
         long startTime = System.nanoTime();
         for (var idx = 0; idx < counter; idx++) {
-            var data = new Data(idx);
             summator.calc(data);
+            data.increment();
 
             if (idx % 10_000_000 == 0) {
                 log.info("{} current idx:{}", LocalDateTime.now(), idx);
