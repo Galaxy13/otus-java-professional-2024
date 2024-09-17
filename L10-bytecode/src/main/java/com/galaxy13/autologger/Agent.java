@@ -6,7 +6,7 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
 
-@SuppressWarnings({"java:S1172", "java:S1192", "java:S125", "java:S1144"})
+@SuppressWarnings({"java:S1172", "java:S1192", "java:S125"})
 public class Agent {
     private Agent() {
     }
@@ -75,34 +75,36 @@ public class Agent {
         return cw.toByteArray();
     }
 
-    private static void toObject(MethodVisitor mv, Type type) {
+    private static String getBuilderAppendDescriptor(Type type) {
+        String appendArgument = "(Ljava/lang/Object;)";
         switch (type.getSort()) {
             case Type.INT:
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
+                appendArgument = "(I)";
                 break;
             case Type.LONG:
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;", false);
+                appendArgument = "(J)";
                 break;
             case Type.FLOAT:
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;", false);
+                appendArgument = "(F)";
                 break;
             case Type.DOUBLE:
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false);
+                appendArgument = "(D)";
                 break;
             case Type.BYTE:
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;", false);
+                appendArgument = "(B)";
                 break;
             case Type.BOOLEAN:
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false);
+                appendArgument = "(Z)";
                 break;
             case Type.SHORT:
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;", false);
+                appendArgument = "(S)";
                 break;
             case Type.CHAR:
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;", false);
+                appendArgument = "(C)";
                 break;
             default:
         }
+        return appendArgument + "Ljava/lang/StringBuilder;";
     }
 
     private static void addParameterInfo(MethodVisitor mv, Type type, int index) {
@@ -172,11 +174,10 @@ public class Agent {
 
     private static void appendParameterValue(MethodVisitor mv, Type type, int index) {
         mv.visitVarInsn(type.getOpcode(Opcodes.ILOAD), index);
-        toObject(mv, type);
         mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                 "java/lang/StringBuilder",
                 "append",
-                "(Ljava/lang/Object;)Ljava/lang/StringBuilder;",
+                getBuilderAppendDescriptor(type),
                 false);
     }
 }
