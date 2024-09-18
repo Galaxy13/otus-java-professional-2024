@@ -24,12 +24,18 @@ public class StringASM {
                     Object[].class).toMethodDescriptorString(),
             false);
 
-    private StringASM() {
-        // default implementation prohibited
-        throw new UnsupportedOperationException("Utility class");
+    private final MethodVisitor mv;
+
+    private StringASM(MethodVisitor mv) {
+        this.mv = mv;
     }
 
-    private static String toStringDescriptor(Type type) {
+    public static StringASM initEmpty(MethodVisitor mv) {
+        mv.visitLdcInsn("");
+        return new StringASM(mv);
+    }
+
+    private String toStringDescriptor(Type type) {
         String appendArgument = "(Ljava/lang/Object;)";
         switch (type.getSort()) {
             case Type.INT:
@@ -61,13 +67,13 @@ public class StringASM {
         return appendArgument + "Ljava/lang/String;";
     }
 
-    public static void appendParameterInfo(MethodVisitor mv, Type type, int index) {
-        appendString(mv, type.getClassName() + " -> ");
-        appendParameterValue(mv, type, index);
-        appendString(mv, "\r\n");
+    public void appendParameterInfo(Type type, int index) {
+        appendString(type.getClassName() + " -> ");
+        appendParameterValue(type, index);
+        appendString("\r\n");
     }
 
-    public static void outputString(MethodVisitor mv) {
+    public void out() {
         mv.visitFieldInsn(Opcodes.GETSTATIC,
                 "java/lang/System",
                 "out",
@@ -80,22 +86,22 @@ public class StringASM {
                 false);
     }
 
-    public static void appendString(MethodVisitor mv, String s) {
+    public void appendString(String s) {
         mv.visitLdcInsn(s);
-        concatStrings(mv);
+        concatStrings();
     }
 
-    private static void appendParameterValue(MethodVisitor mv, Type type, int index) {
+    private void appendParameterValue(Type type, int index) {
         mv.visitVarInsn(type.getOpcode(Opcodes.ILOAD), index);
         mv.visitMethodInsn(Opcodes.INVOKESTATIC,
                 "java/lang/String",
                 "valueOf",
                 toStringDescriptor(type),
                 false);
-        concatStrings(mv);
+        concatStrings();
     }
 
-    private static void concatStrings(MethodVisitor mv) {
+    private void concatStrings() {
         mv.visitInvokeDynamicInsn("makeConcatWithConstants",
                 "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
                 CONCAT_HANDLE,

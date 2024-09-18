@@ -6,9 +6,6 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
 
-import static com.galaxy13.autologger.StringASM.*;
-
-
 @SuppressWarnings({"java:S1172"})
 public class Agent {
     private Agent() {
@@ -53,8 +50,8 @@ public class Agent {
                     @Override
                     public void visitCode() {
                         if (isLogging) {
-                            mv.visitLdcInsn("");
-                            appendString(mv, "Executed method: <" + name + ">, parameters:\r\n");
+                            var strASM = StringASM.initEmpty(mv);
+                            strASM.appendString("Executed method: <" + name + ">, parameters:\r\n");
 
                             Type[] types = Type.getArgumentTypes(descriptor);
 
@@ -63,10 +60,10 @@ public class Agent {
                                 index++;
                             }
                             for (Type type : types) {
-                                appendParameterInfo(mv, type, index);
+                                strASM.appendParameterInfo(type, index);
                                 index += type.getSize();
                             }
-                            outputString(mv);
+                            strASM.out();
                         }
                         super.visitCode();
                     }
