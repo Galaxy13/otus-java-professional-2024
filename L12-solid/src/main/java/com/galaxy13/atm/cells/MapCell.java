@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapCell<T extends Money> extends Cell<T> {
+public class MapCell<T extends Money> implements Cell<T> {
     private final Map<Integer, List<T>> cellStorage;
 
     public MapCell() {

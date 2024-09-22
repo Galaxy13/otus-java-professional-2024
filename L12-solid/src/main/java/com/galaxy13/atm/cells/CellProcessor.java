@@ -6,7 +6,7 @@ import com.galaxy13.atm.money.Money;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CellProcessor<T extends Money> extends CellHandler<T> {
+public class CellProcessor<T extends Money> implements CellHandler<T> {
     private final Map<Integer, Cell<T>> cells;
 
     public CellProcessor(int[] schema, int cellAmount) {

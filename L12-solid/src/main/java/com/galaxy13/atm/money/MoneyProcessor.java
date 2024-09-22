@@ -7,7 +7,7 @@ import com.galaxy13.atm.exceptions.UnsupportedMoneyValue;
 
 import java.util.*;
 
-public class MoneyProcessor<T extends Money> extends MoneyHandler<T> {
+public class MoneyProcessor<T extends Money> implements MoneyHandler<T> {
     private final List<Integer> moneyList;
     private final Set<Integer> checkSet;
     private final CellProcessor<T> cellProcessor;
