@@ -7,20 +7,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapCell<T extends Money> implements Cell<T> {
-    private final Map<Integer, List<T>> cellStorage;
+public class MapCell implements Cell {
+    private final Map<Integer, List<Money>> cellStorage;
 
     public MapCell() {
         this.cellStorage = new HashMap<>();
     }
 
     @Override
-    public void putMoney(T money) {
-        cellStorage.computeIfAbsent(money.getValue(), x -> new ArrayList<>()).add(money);
+    public void putMoney(Money money) {
+        cellStorage.computeIfAbsent(money.value(), x -> new ArrayList<>()).add(money);
     }
 
     @Override
-    public T retrieveMoney(int moneyValue) {
+    public Money retrieveMoney(int moneyValue) {
         return cellStorage.get(moneyValue).removeLast();
     }
 }

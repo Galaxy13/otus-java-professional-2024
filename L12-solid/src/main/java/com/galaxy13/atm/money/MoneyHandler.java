@@ -2,11 +2,11 @@ package com.galaxy13.atm.money;
 
 import java.util.List;
 
-public interface MoneyHandler<T extends Money> {
+public interface MoneyHandler {
 
     int getMoneyResidue();
 
-    void store(T money);
+    void store(Money money);
 
-    List<T> retreive(int amount);
+    List<Money> retreive(int amount);
 }

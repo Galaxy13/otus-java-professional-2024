@@ -2,8 +2,8 @@ package com.galaxy13.atm.cells;
 
 import com.galaxy13.atm.money.Money;
 
-public interface Cell<T extends Money> {
-    void putMoney(T money);
+public interface Cell {
+    void putMoney(Money money);
 
-    T retrieveMoney(int moneyValue);
+    Money retrieveMoney(int moneyValue);
 }

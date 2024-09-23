@@ -2,9 +2,9 @@ package com.galaxy13.atm.cells;
 
 import com.galaxy13.atm.money.Money;
 
-public interface CellHandler<T extends Money> {
+public interface CellHandler {
 
-    void putMoney(T money);
+    void putMoney(Money money);
 
-    T retrieveFromCells(int value);
+    Money retrieveFromCells(int value);
 }
