@@ -18,16 +18,14 @@ public class HistoryListenerImpl extends HistoryListener {
 
     @Override
     public void onUpdated(Message message) {
-        var oldObjectFromMessage = message.getField13();
-        var newObjectForMessage = new ObjectForMessage();
-        if (oldObjectFromMessage != null) {
-            if (oldObjectFromMessage.getData() != null) {
-                newObjectForMessage.setData(new ArrayList<>(oldObjectFromMessage.getData()));
-                history.put(message.getId(),
-                        message.toBuilder().field13(newObjectForMessage).build());
+        var msgCloneBuilder = message.toBuilder();
+        if (message.getField13() != null) {
+            var newObjectForMessage = new ObjectForMessage();
+            if (message.getField13().getData() != null) {
+                newObjectForMessage.setData(new ArrayList<>(message.getField13().getData()));
             }
-        } else {
-            history.put(message.getId(), message);
+            msgCloneBuilder.field13(newObjectForMessage);
         }
+        history.put(message.getId(), msgCloneBuilder.build());
     }
 }
