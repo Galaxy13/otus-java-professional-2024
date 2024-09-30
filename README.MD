@@ -12,6 +12,10 @@
 4.
     - [x] Garbage Collection
 5.
-    - [ ] Byte-code, ASM
+   - [x] Byte-code, ASM
+6.
+   - [x] SOLID
+7.
+   - [ ] Patterns
 
 **Student**: Khortov Gennadiy
