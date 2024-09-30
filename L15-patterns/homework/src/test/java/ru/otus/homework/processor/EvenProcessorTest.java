@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class EvenProcessorTest {
+class EvenProcessorTest {
     @Mock
     private SecondProvider provider;
 
@@ -42,7 +42,7 @@ public class EvenProcessorTest {
 
     @ParameterizedTest
     @MethodSource("generateArguments")
-    public void testEvenProcessor(int seconds, Message message, Message expected) {
+    void testEvenProcessor(int seconds, Message message, Message expected) {
         when(provider.currentSeconds()).thenReturn(seconds);
         Processor processor = new EvenSecondExceptionWrapper(new FieldSwapProcessor(), provider);
 
