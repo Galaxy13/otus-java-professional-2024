@@ -1,8 +1,11 @@
 package ru.otus.homework.processor;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.model.Message;
 import ru.otus.processor.EvenSecondExceptionWrapper;
 import ru.otus.processor.FieldSwapProcessor;
@@ -13,8 +16,13 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class EvenProcessorTest {
+    @Mock
+    private SecondProvider provider;
+
     private static Stream<Arguments> generateArguments() {
         var expected = new Message.Builder(1)
                 .field11("field12")
@@ -27,14 +35,15 @@ public class EvenProcessorTest {
                 .build();
 
         return Stream.of(
-                Arguments.of((SecondProvider) () -> 2, message, expected),
-                Arguments.of((SecondProvider) () -> 1, message, expected)
+                Arguments.of(2, message, expected),
+                Arguments.of(1, message, expected)
         );
     }
 
     @ParameterizedTest
     @MethodSource("generateArguments")
-    public void testEvenAndSwapProcessor(SecondProvider provider, Message message, Message expected) {
+    public void testEvenProcessor(int seconds, Message message, Message expected) {
+        when(provider.currentSeconds()).thenReturn(seconds);
         Processor processor = new EvenSecondExceptionWrapper(new FieldSwapProcessor(), provider);
 
         if (provider.currentSeconds() % 2 == 0) {
