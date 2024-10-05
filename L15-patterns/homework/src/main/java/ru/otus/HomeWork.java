@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Consumer;
 
+@SuppressWarnings("java:S125")
 public class HomeWork {
 
     private static final Logger logger = LoggerFactory.getLogger(HomeWork.class);
@@ -38,8 +39,8 @@ public class HomeWork {
           из элеменов "to do" создать new ComplexProcessor и обработать сообщение
         */
         SecondProvider realProvider = () -> LocalDateTime.now().getSecond();
-        SecondProvider exceptionProvider = () -> 0;
-        SecondProvider noExceptionProvider = () -> 1;
+//        SecondProvider exceptionProvider = () -> 0;
+//        SecondProvider noExceptionProvider = () -> 1;
 
         List<Processor> processors = List.of(new FieldSwapProcessor(),
                 new EvenSecondExceptionWrapper(new ProcessorUpperField10(), realProvider));
