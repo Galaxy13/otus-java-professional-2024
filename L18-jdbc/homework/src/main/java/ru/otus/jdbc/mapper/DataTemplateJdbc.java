@@ -6,7 +6,10 @@ import ru.otus.jdbc.mapper.orm.EntityClassMetaData;
 import ru.otus.jdbc.mapper.orm.EntityClassMetaDataImpl;
 import ru.otus.jdbc.mapper.orm.EntitySQLMetaData;
 import ru.otus.jdbc.mapper.orm.EntitySQLMetaDataImpl;
-import ru.otus.jdbc.mapper.orm.exceptions.*;
+import ru.otus.jdbc.mapper.orm.exceptions.NoFieldGetterException;
+import ru.otus.jdbc.mapper.orm.exceptions.NoFieldSetterException;
+import ru.otus.jdbc.mapper.orm.exceptions.OrmInvocationException;
+import ru.otus.jdbc.mapper.orm.exceptions.ResultSetException;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -77,12 +80,10 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     @Override
     public void update(Connection connection, T client) {
-        if (!checkIfIdPresented(client)) {
-            throw new NoIdException("Id parameter must be not null on update query");
-        }
         String updateSQL = entitySQLMetaData.getUpdateSql();
-        List<String> allFields = entityClassMetaData.getAllFields().stream().map(Field::getName).toList();
-        dbExecutor.executeStatement(connection, updateSQL, getFieldValues(client, allFields));
+        List<String> nonIdFields = entityClassMetaData.getFieldsWithoutId().stream().map(Field::getName).toList();
+        String idField = entityClassMetaData.getIdField().getName();
+        dbExecutor.executeStatement(connection, updateSQL, getFieldValuesWithId(client, nonIdFields, idField));
     }
 
     private T createNewObject() {
@@ -142,14 +143,14 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         return obj;
     }
 
-    private boolean checkIfIdPresented(T object) {
-        String idField = entityClassMetaData.getIdField().getName();
+
+    private List<Object> getFieldValuesWithId(T obj, List<String> nonIdFields, String idField) {
+        List<Object> values = getFieldValues(obj, nonIdFields);
         try {
-            Object id = object.getClass().getMethod("get" + capitalize(idField)).invoke(object);
-            return id != null;
+            values.add(obj.getClass().getMethod("get" + capitalize(idField)).invoke(obj));
         } catch (Exception e) {
             throw new NoFieldGetterException(e);
         }
+        return values;
     }
-
 }

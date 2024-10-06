@@ -35,11 +35,11 @@ public class HomeWork {
 
         // Код дальше должен остаться
         var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
-        dbServiceClient.saveClient(new Client("dbServiceFirst"));
+        dbServiceClient.save(new Client("dbServiceFirst"));
 
-        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
+        var clientSecond = dbServiceClient.save(new Client("dbServiceSecond"));
         var clientSecondSelected = dbServiceClient
-                .getClient(clientSecond.getId())
+                .get(clientSecond.getId())
                 .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
         log.info("clientSecondSelected:{}", clientSecondSelected);
 
@@ -48,11 +48,11 @@ public class HomeWork {
         var dataTemplateManager = new DataTemplateJdbc<>(dbExecutor, Manager.class);
 
         var dbServiceManager = new DbServiceManagerImpl(transactionRunner, dataTemplateManager);
-        dbServiceManager.saveManager(new Manager("ManagerFirst"));
+        dbServiceManager.save(new Manager("ManagerFirst"));
 
-        var managerSecond = dbServiceManager.saveManager(new Manager("ManagerSecond"));
+        var managerSecond = dbServiceManager.save(new Manager("ManagerSecond"));
         var managerSecondSelected = dbServiceManager
-                .getManager(managerSecond.getNo())
+                .get(managerSecond.getNo())
                 .orElseThrow(() -> new RuntimeException("Manager not found, id:" + managerSecond.getNo()));
         log.info("managerSecondSelected:{}", managerSecondSelected);
     }

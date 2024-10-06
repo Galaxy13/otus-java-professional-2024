@@ -9,7 +9,7 @@ import ru.otus.jdbc.mapper.crm.model.Manager;
 import java.util.List;
 import java.util.Optional;
 
-public class DbServiceManagerImpl implements DBServiceManager {
+public class DbServiceManagerImpl implements DBService<Manager> {
     private static final Logger log = LoggerFactory.getLogger(DbServiceManagerImpl.class);
 
     private final DataTemplate<Manager> managerDataTemplate;
@@ -21,7 +21,7 @@ public class DbServiceManagerImpl implements DBServiceManager {
     }
 
     @Override
-    public Manager saveManager(Manager manager) {
+    public Manager save(Manager manager) {
         return transactionRunner.doInTransaction(connection -> {
             if (manager.getNo() == null) {
                 var managerNo = managerDataTemplate.insert(connection, manager);
@@ -36,7 +36,7 @@ public class DbServiceManagerImpl implements DBServiceManager {
     }
 
     @Override
-    public Optional<Manager> getManager(long no) {
+    public Optional<Manager> get(long no) {
         return transactionRunner.doInTransaction(connection -> {
             var managerOptional = managerDataTemplate.findById(connection, no);
             log.info("manager: {}", managerOptional);

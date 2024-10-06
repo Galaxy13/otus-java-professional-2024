@@ -3,7 +3,6 @@ package ru.otus.jdbc.mapper.orm;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
     private final EntityClassMetaData<T> entityClassMetaData;
@@ -31,33 +30,32 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
     @Override
     public String getInsertSql() {
         String tableName = entityClassMetaData.getName().toLowerCase();
-        return String.format("insert into %s%s values %s",
+        List<Field> fields = entityClassMetaData.getFieldsWithoutId();
+        String columnNames = fields
+                .stream()
+                .map(Field::getName)
+                .collect(Collectors.joining(","));
+        String placeholders = fields
+                .stream()
+                .map(field -> "?")
+                .collect(Collectors.joining(","));
+        return String.format("insert into %s (%s) values (%s)",
                 tableName,
-                buildFieldClosures(),
-                buildValueClosures());
+                columnNames,
+                placeholders);
     }
 
     @Override
     public String getUpdateSql() {
         String tableName = entityClassMetaData.getName().toLowerCase();
         String idFieldName = entityClassMetaData.getIdField().getName().toLowerCase();
-        return String.format("update %s set %s = %s where %s = ?",
-                tableName,
-                buildFieldClosures(),
-                buildValueClosures(),
-                idFieldName);
-    }
-
-    private String buildFieldClosures() {
-        List<String> nonIdFields = entityClassMetaData.getFieldsWithoutId()
+        String setClause = entityClassMetaData.getFieldsWithoutId()
                 .stream()
-                .map(Field::getName)
-                .toList();
-        return "(" + String.join(",", nonIdFields) + ")";
-    }
-
-    private String buildValueClosures() {
-        int numberOfFields = entityClassMetaData.getFieldsWithoutId().size();
-        return "(" + IntStream.range(0, numberOfFields).mapToObj(x -> "?").collect(Collectors.joining(",")) + ")";
+                .map(field -> field.getName().toLowerCase() + " = ?")
+                .collect(Collectors.joining(", "));
+        return String.format("update %s set %s where %s = ?",
+                tableName,
+                setClause,
+                idFieldName);
     }
 }

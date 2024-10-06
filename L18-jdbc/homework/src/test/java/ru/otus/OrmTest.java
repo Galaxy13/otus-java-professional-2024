@@ -59,11 +59,11 @@ class OrmTest {
         var dataTemplateClient = new DataTemplateJdbc<>(dbExecutor, Client.class);
         var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
 
-        var insertedClient1 = dbServiceClient.saveClient(new Client("name1"));
+        var insertedClient1 = dbServiceClient.save(new Client("name1"));
         assertThat(insertedClient1).isNotNull();
         assertThat(insertedClient1.getName()).isEqualTo("name1");
 
-        var getClient1 = dbServiceClient.getClient(insertedClient1.getId());
+        var getClient1 = dbServiceClient.get(insertedClient1.getId());
         if (getClient1.isPresent()) {
             assertThat(getClient1.get().getName()).isEqualTo("name1");
             assertThat(getClient1.get().getId()).isEqualTo(insertedClient1.getId());
@@ -71,7 +71,7 @@ class OrmTest {
             throw new RuntimeException("Result is null");
         }
 
-        var insertedClient2 = dbServiceClient.saveClient(new Client("name2"));
+        var insertedClient2 = dbServiceClient.save(new Client("name2"));
         var allClients = dbServiceClient.findAll();
         assertThat(allClients).hasSize(2);
         assertThat(allClients).satisfiesExactly(item1 -> {
@@ -82,6 +82,17 @@ class OrmTest {
                     assertThat(item2.getName()).isEqualTo("name2");
                     assertThat(item2.getId()).isEqualTo(insertedClient2.getId());
                 });
+
+        var updateClient = new Client(insertedClient1.getId(), "newName");
+        dbServiceClient.save(updateClient);
+
+        assertThat(dbServiceClient.findAll()).hasSize(2);
+        var updatedClient1 = dbServiceClient.get(updateClient.getId());
+        if (updatedClient1.isPresent()) {
+            assertThat(updatedClient1.get().getName()).isEqualTo("newName");
+        } else {
+            throw new RuntimeException("Update client failed. No client found with id");
+        }
     }
 
     @Test
@@ -91,23 +102,34 @@ class OrmTest {
         var dataTemplateManager = new DataTemplateJdbc<>(dbExecutor, Manager.class);
         var dbServiceManager = new DbServiceManagerImpl(transactionRunner, dataTemplateManager);
 
-        assertThat(dbServiceManager.getManager(1)).isNotPresent();
+        assertThat(dbServiceManager.get(1)).isNotPresent();
         assertThat(dbServiceManager.findAll()).isEmpty();
 
-        var insertedManager1 = dbServiceManager.saveManager(new Manager("manager1"));
-        var selectedManager1 = dbServiceManager.getManager(insertedManager1.getNo());
+        var insertedManager1 = dbServiceManager.save(new Manager("manager1"));
+        var selectedManager1 = dbServiceManager.get(insertedManager1.getNo());
         if (selectedManager1.isPresent()) {
             assertThat(selectedManager1.get().getLabel()).isEqualTo("manager1");
             assertThat(selectedManager1.get().getNo()).isEqualTo(insertedManager1.getNo());
             assertThat(selectedManager1.get().getParam1()).isNull();
         }
 
-        var insertedManager2 = dbServiceManager.saveManager(new Manager("manager2", "label2"));
-        var selectedManager2 = dbServiceManager.getManager(insertedManager2.getNo());
+        var insertedManager2 = dbServiceManager.save(new Manager("manager2", "label2"));
+        var selectedManager2 = dbServiceManager.get(insertedManager2.getNo());
         if (selectedManager2.isPresent()) {
             assertThat(selectedManager2.get().getLabel()).isEqualTo("manager2");
             assertThat(selectedManager2.get().getNo()).isEqualTo(insertedManager2.getNo());
             assertThat(selectedManager2.get().getParam1()).isEqualTo("label2");
+        }
+
+        insertedManager2.setLabel("newLabel");
+        insertedManager2.setParam1("updatedParam");
+        dbServiceManager.save(insertedManager2);
+        var updatedManager2 = dbServiceManager.get(insertedManager2.getNo());
+        if (updatedManager2.isPresent()) {
+            assertThat(updatedManager2.get().getLabel()).isEqualTo("newLabel");
+            assertThat(updatedManager2.get().getParam1()).isEqualTo("updatedParam");
+        } else {
+            throw new RuntimeException("Update manager failed. No obj found with no");
         }
     }
 }

@@ -9,7 +9,7 @@ import ru.otus.jdbc.mapper.crm.model.Client;
 import java.util.List;
 import java.util.Optional;
 
-public class DbServiceClientImpl implements DBServiceClient {
+public class DbServiceClientImpl implements DBService<Client> {
     private static final Logger log = LoggerFactory.getLogger(DbServiceClientImpl.class);
 
     private final DataTemplate<Client> dataTemplate;
@@ -21,7 +21,7 @@ public class DbServiceClientImpl implements DBServiceClient {
     }
 
     @Override
-    public Client saveClient(Client client) {
+    public Client save(Client client) {
         return transactionRunner.doInTransaction(connection -> {
             if (client.getId() == null) {
                 var clientId = dataTemplate.insert(connection, client);
@@ -36,7 +36,7 @@ public class DbServiceClientImpl implements DBServiceClient {
     }
 
     @Override
-    public Optional<Client> getClient(long id) {
+    public Optional<Client> get(long id) {
         return transactionRunner.doInTransaction(connection -> {
             var clientOptional = dataTemplate.findById(connection, id);
             log.info("client: {}", clientOptional);
