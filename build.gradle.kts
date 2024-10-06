@@ -9,6 +9,7 @@ plugins {
     id("io.spring.dependency-management")
     id("org.springframework.boot") apply false
     id("name.remal.sonarlint")
+    id("com.bmuschko.docker-remote-api")
 }
 
 idea {
@@ -27,6 +28,7 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+        gradlePluginPortal()
     }
 
     val testcontainersBom: String by project
