@@ -26,13 +26,13 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
         this.allFields = List.of(entityClass.getDeclaredFields());
 
-        var idField = allFields.stream().filter(x -> x.isAnnotationPresent(Id.class)).toList();
-        if (idField.isEmpty()) {
+        var idFieldCheck = allFields.stream().filter(x -> x.isAnnotationPresent(Id.class)).toList();
+        if (idFieldCheck.isEmpty()) {
             throw new NoIdException("No @id annotation presented in" + entityClass.getSimpleName());
-        } else if (idField.size() > 1) {
+        } else if (idFieldCheck.size() > 1) {
             throw new IdOverloadException();
         }
-        this.idField = idField.getFirst();
+        this.idField = idFieldCheck.getFirst();
 
         this.nonIdFields = this.allFields.stream().filter(x -> !x.isAnnotationPresent(Id.class)).toList();
     }
@@ -51,9 +51,6 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         return this.constructor;
     }
 
-    private List<Field> getFields() {
-        return List.of(entityClass.getDeclaredFields());
-    }
 
     @Override
     public Field getIdField() {
