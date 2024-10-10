@@ -9,6 +9,7 @@ include("L15-patterns:homework")
 include("L16-io:homework")
 include("L18-jdbc:demo")
 include("L18-jdbc:homework")
+include("L21-jpql:homework")
 
 pluginManagement {
     val jgitver: String by settings
