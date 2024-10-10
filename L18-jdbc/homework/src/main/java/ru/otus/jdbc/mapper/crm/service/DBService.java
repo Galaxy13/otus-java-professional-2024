@@ -8,7 +8,7 @@ public interface DBService<T> {
 
     T save(T client);
 
-    Optional<T> get(long no);
+    Optional<T> getById(long no);
 
     List<T> findAll();
 }

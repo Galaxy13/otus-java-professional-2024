@@ -39,7 +39,7 @@ public class HomeWork {
 
         var clientSecond = dbServiceClient.save(new Client("dbServiceSecond"));
         var clientSecondSelected = dbServiceClient
-                .get(clientSecond.getId())
+                .getById(clientSecond.getId())
                 .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
         log.info("clientSecondSelected:{}", clientSecondSelected);
 
@@ -52,7 +52,7 @@ public class HomeWork {
 
         var managerSecond = dbServiceManager.save(new Manager("ManagerSecond"));
         var managerSecondSelected = dbServiceManager
-                .get(managerSecond.getNo())
+                .getById(managerSecond.getNo())
                 .orElseThrow(() -> new RuntimeException("Manager not found, id:" + managerSecond.getNo()));
         log.info("managerSecondSelected:{}", managerSecondSelected);
     }

@@ -11,9 +11,30 @@ import java.util.List;
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     private final Class<T> entityClass;
+    private final Constructor<T> constructor;
+    private final Field idField;
+    private final List<Field> allFields;
+    private final List<Field> nonIdFields;
 
     private EntityClassMetaDataImpl(Class<T> entityClass) {
         this.entityClass = entityClass;
+        try {
+            this.constructor = entityClass.getConstructor();
+        } catch (NoSuchMethodException e) {
+            throw new EntityConstructorException(entityClass, e);
+        }
+
+        this.allFields = List.of(entityClass.getDeclaredFields());
+
+        var idField = allFields.stream().filter(x -> x.isAnnotationPresent(Id.class)).toList();
+        if (idField.isEmpty()) {
+            throw new NoIdException("No @id annotation presented in" + entityClass.getSimpleName());
+        } else if (idField.size() > 1) {
+            throw new IdOverloadException();
+        }
+        this.idField = idField.getFirst();
+
+        this.nonIdFields = this.allFields.stream().filter(x -> !x.isAnnotationPresent(Id.class)).toList();
     }
 
     public static <T> EntityClassMetaData<T> makeMetaData(Class<T> entityClass) {
@@ -27,11 +48,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public Constructor<T> getConstructor() {
-        try {
-            return entityClass.getConstructor();
-        } catch (NoSuchMethodException e) {
-            throw new EntityConstructorException(entityClass, e);
-        }
+        return this.constructor;
     }
 
     private List<Field> getFields() {
@@ -40,22 +57,16 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public Field getIdField() {
-        List<Field> idFields = getFields().stream().filter(x -> x.isAnnotationPresent(Id.class)).toList();
-        if (idFields.isEmpty()) {
-            throw new NoIdException("No @id annotation presented in" + entityClass.getSimpleName());
-        } else if (idFields.size() > 1) {
-            throw new IdOverloadException();
-        }
-        return idFields.getFirst();
+        return idField;
     }
 
     @Override
     public List<Field> getAllFields() {
-        return getFields();
+        return this.allFields;
     }
 
     @Override
     public List<Field> getFieldsWithoutId() {
-        return getFields().stream().filter(x -> !x.isAnnotationPresent(Id.class)).toList();
+        return this.nonIdFields;
     }
 }

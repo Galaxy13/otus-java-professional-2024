@@ -63,7 +63,7 @@ class OrmTest {
         assertThat(insertedClient1).isNotNull();
         assertThat(insertedClient1.getName()).isEqualTo("name1");
 
-        var getClient1 = dbServiceClient.get(insertedClient1.getId());
+        var getClient1 = dbServiceClient.getById(insertedClient1.getId());
         if (getClient1.isPresent()) {
             assertThat(getClient1.get().getName()).isEqualTo("name1");
             assertThat(getClient1.get().getId()).isEqualTo(insertedClient1.getId());
@@ -87,7 +87,7 @@ class OrmTest {
         dbServiceClient.save(updateClient);
 
         assertThat(dbServiceClient.findAll()).hasSize(2);
-        var updatedClient1 = dbServiceClient.get(updateClient.getId());
+        var updatedClient1 = dbServiceClient.getById(updateClient.getId());
         if (updatedClient1.isPresent()) {
             assertThat(updatedClient1.get().getName()).isEqualTo("newName");
         } else {
@@ -102,11 +102,11 @@ class OrmTest {
         var dataTemplateManager = new DataTemplateJdbc<>(dbExecutor, Manager.class);
         var dbServiceManager = new DbServiceManagerImpl(transactionRunner, dataTemplateManager);
 
-        assertThat(dbServiceManager.get(1)).isNotPresent();
+        assertThat(dbServiceManager.getById(1)).isNotPresent();
         assertThat(dbServiceManager.findAll()).isEmpty();
 
         var insertedManager1 = dbServiceManager.save(new Manager("manager1"));
-        var selectedManager1 = dbServiceManager.get(insertedManager1.getNo());
+        var selectedManager1 = dbServiceManager.getById(insertedManager1.getNo());
         if (selectedManager1.isPresent()) {
             assertThat(selectedManager1.get().getLabel()).isEqualTo("manager1");
             assertThat(selectedManager1.get().getNo()).isEqualTo(insertedManager1.getNo());
@@ -114,7 +114,7 @@ class OrmTest {
         }
 
         var insertedManager2 = dbServiceManager.save(new Manager("manager2", "label2"));
-        var selectedManager2 = dbServiceManager.get(insertedManager2.getNo());
+        var selectedManager2 = dbServiceManager.getById(insertedManager2.getNo());
         if (selectedManager2.isPresent()) {
             assertThat(selectedManager2.get().getLabel()).isEqualTo("manager2");
             assertThat(selectedManager2.get().getNo()).isEqualTo(insertedManager2.getNo());
@@ -124,7 +124,7 @@ class OrmTest {
         insertedManager2.setLabel("newLabel");
         insertedManager2.setParam1("updatedParam");
         dbServiceManager.save(insertedManager2);
-        var updatedManager2 = dbServiceManager.get(insertedManager2.getNo());
+        var updatedManager2 = dbServiceManager.getById(insertedManager2.getNo());
         if (updatedManager2.isPresent()) {
             assertThat(updatedManager2.get().getLabel()).isEqualTo("newLabel");
             assertThat(updatedManager2.get().getParam1()).isEqualTo("updatedParam");

@@ -36,7 +36,7 @@ public class DbServiceManagerImpl implements DBService<Manager> {
     }
 
     @Override
-    public Optional<Manager> get(long no) {
+    public Optional<Manager> getById(long no) {
         return transactionRunner.doInTransaction(connection -> {
             var managerOptional = managerDataTemplate.findById(connection, no);
             log.info("manager: {}", managerOptional);

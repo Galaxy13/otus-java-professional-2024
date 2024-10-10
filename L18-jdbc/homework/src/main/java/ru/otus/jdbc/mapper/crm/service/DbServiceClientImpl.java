@@ -36,7 +36,7 @@ public class DbServiceClientImpl implements DBService<Client> {
     }
 
     @Override
-    public Optional<Client> get(long id) {
+    public Optional<Client> getById(long id) {
         return transactionRunner.doInTransaction(connection -> {
             var clientOptional = dataTemplate.findById(connection, id);
             log.info("client: {}", clientOptional);
