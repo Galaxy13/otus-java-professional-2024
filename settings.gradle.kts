@@ -7,6 +7,8 @@ include("L10-bytecode")
 include("L12-solid")
 include("L15-patterns:homework")
 include("L16-io:homework")
+include("L18-jdbc:demo")
+include("L18-jdbc:homework")
 
 pluginManagement {
     val jgitver: String by settings
@@ -17,6 +19,7 @@ pluginManagement {
     val protobufVer: String by settings
     val sonarlint: String by settings
     val spotless: String by settings
+    val gradleDockerPlugin: String by settings
 
     plugins {
         id("fr.brouillard.oss.gradle.jgitver") version jgitver
@@ -27,5 +30,6 @@ pluginManagement {
         id("com.google.protobuf") version protobufVer
         id("name.remal.sonarlint") version sonarlint
         id("com.diffplug.spotless") version spotless
+        id("com.bmuschko.docker-remote-api") version gradleDockerPlugin
     }
 }

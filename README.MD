@@ -16,6 +16,10 @@
 6.
    - [x] SOLID
 7.
-   - [ ] Patterns
+    - [x] Patterns
+8.
+    - [x] Serialization
+9.
+    - [ ] JDBC
 
 **Student**: Khortov Gennadiy
