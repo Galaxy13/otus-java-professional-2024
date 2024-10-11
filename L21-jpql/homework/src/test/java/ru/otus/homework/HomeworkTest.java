@@ -112,7 +112,7 @@ class HomeworkTest {
             } else if (fieldLowerName.contains("phone") && Collection.class.isAssignableFrom(field.getType())) {
                 hasPhones = true;
                 field.setAccessible(true);
-                var fieldValue = (Collection) field.get(client);
+                var fieldValue = (Collection<Phone>) field.get(client);
                 fieldValue.forEach(e -> assertThatObjectHasExpectedClientFieldValue(e, client));
             }
         }

@@ -16,7 +16,6 @@ create table client
     id         bigint not null primary key,
     name       varchar(50),
     address_id bigint,
-    phones     bigint[]
 );
 
 create table address
@@ -27,6 +26,7 @@ create table address
 
 create table phone
 (
-    phone_id bigserial not null primary key,
-    number   varchar(255)
+    phone_id  bigserial not null primary key,
+    number    varchar(255),
+    client_id bigint    not null
 )

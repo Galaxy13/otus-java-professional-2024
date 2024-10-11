@@ -26,13 +26,15 @@ public class Client implements Cloneable {
     private String name;
 
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "address_id")
     private Address address;
 
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "client_id")
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true)
+    @JoinColumn(name = "client_id", updatable = false, nullable = false)
     private List<Phone> phones;
 
 
@@ -46,14 +48,13 @@ public class Client implements Cloneable {
         this.name = name;
     }
 
-//    public <E> Client(Long id, String name, Address address, List<Phone> phones) {
-//        throw new UnsupportedOperationException();
-//    }
-
     @Override
     @SuppressWarnings({"java:S2975", "java:S1182"})
     public Client clone() {
-        return new Client(this.id, this.name);
+        return new Client(this.id,
+                this.name,
+                this.address,
+                this.phones);
     }
 
     @Override
