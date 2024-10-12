@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -34,9 +35,9 @@ public class Client implements Cloneable {
 
 
     @Fetch(FetchMode.SUBSELECT)
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "client_id", updatable = false, nullable = false)
-    private List<Phone> phones;
+    private List<Phone> phones = new ArrayList<>();
 
 
     public Client(String name) {
