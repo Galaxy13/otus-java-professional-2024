@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.List;
 
@@ -31,9 +33,8 @@ public class Client implements Cloneable {
     private Address address;
 
 
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id", updatable = false, nullable = false)
     private List<Phone> phones;
 
@@ -51,10 +52,16 @@ public class Client implements Cloneable {
     @Override
     @SuppressWarnings({"java:S2975", "java:S1182"})
     public Client clone() {
+        List<Phone> clonedPhoneList;
+        if (this.phones == null) {
+            clonedPhoneList = null;
+        } else {
+            clonedPhoneList = this.phones.stream().map(Phone::clonePhone).toList();
+        }
         return new Client(this.id,
                 this.name,
-                this.address,
-                this.phones);
+                Address.cloneAddress(this.address),
+                clonedPhoneList);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package ru.otus.crm.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "phone")
 public class Phone {
@@ -21,8 +22,9 @@ public class Phone {
     @Column(name = "number")
     private String number;
 
-    public Phone(Long id, String number) {
-        this.id = id;
-        this.number = number;
+
+    public static Phone clonePhone(Phone phone) {
+        if (phone == null) return null;
+        return new Phone(phone.getId(), phone.getNumber());
     }
 }

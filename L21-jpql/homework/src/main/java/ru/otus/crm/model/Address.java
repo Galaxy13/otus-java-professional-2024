@@ -22,4 +22,8 @@ public class Address {
     @Column(name = "street")
     private String street;
 
+    public static Address cloneAddress(Address address) {
+        if (address == null) return null;
+        return new Address(address.getId(), address.getStreet());
+    }
 }
