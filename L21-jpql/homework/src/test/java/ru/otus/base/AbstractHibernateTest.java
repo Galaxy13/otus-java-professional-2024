@@ -20,6 +20,7 @@ import ru.otus.crm.service.DbServiceClientImpl;
 import static ru.otus.demo.DbServiceDemo.HIBERNATE_CFG_FILE;
 
 public abstract class AbstractHibernateTest {
+    @SuppressWarnings("java:S3008")
     private static TestContainersConfig.CustomPostgreSQLContainer CONTAINER;
     protected SessionFactory sessionFactory;
     protected TransactionManagerHibernate transactionManager;
