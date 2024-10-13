@@ -3,7 +3,6 @@ package ru.otus.crm.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -13,7 +12,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "client")
@@ -28,26 +26,29 @@ public class Client implements Cloneable {
     @Column(name = "name")
     private String name;
 
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "address_id")
     private Address address;
 
-
     @Fetch(FetchMode.SUBSELECT)
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "client_id", updatable = false, nullable = false)
-    private List<Phone> phones = new ArrayList<>();
+    private List<Phone> phones;
 
+    public Client() {
+        this.phones = new ArrayList<>();
+    }
 
     public Client(String name) {
         this.id = null;
         this.name = name;
+        this.phones = new ArrayList<>();
     }
 
-    public Client(Long id, String name) {
+    public Client(Long id, String name, List<Phone> phones) {
         this.id = id;
         this.name = name;
+        this.phones = phones;
     }
 
     @Override

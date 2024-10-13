@@ -12,6 +12,8 @@ import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Phone;
 import ru.otus.crm.service.DbServiceClientImpl;
 
+import java.util.List;
+
 public class DbServiceDemo {
 
     public static final String HIBERNATE_CFG_FILE = "hibernate.cfg.xml";
@@ -41,7 +43,7 @@ public class DbServiceDemo {
                 .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
         log.info("clientSecondSelected:{}", clientSecondSelected);
         ///
-        dbServiceClient.saveClient(new Client(clientSecondSelected.getId(), "dbServiceSecondUpdated"));
+        dbServiceClient.saveClient(new Client(clientSecondSelected.getId(), "dbServiceSecondUpdated", List.of()));
         var clientUpdated = dbServiceClient
                 .getClient(clientSecondSelected.getId())
                 .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecondSelected.getId()));
