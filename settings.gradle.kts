@@ -10,6 +10,8 @@ include("L16-io:homework")
 include("L18-jdbc:demo")
 include("L18-jdbc:homework")
 include("L21-jpql:homework")
+include("L22-cache:cache")
+include("L22-cache:homework")
 
 pluginManagement {
     val jgitver: String by settings
