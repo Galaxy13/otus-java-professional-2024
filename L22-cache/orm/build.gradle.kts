@@ -16,6 +16,15 @@ dependencies {
     testImplementation("org.assertj:assertj-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
 
-    testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
+    implementation("org.testcontainers:junit-jupiter")
+    implementation("org.testcontainers:postgresql")
+
+    jmh("org.openjdk.jmh:jmh-core")
+    jmh("org.openjdk.jmh:jmh-generator-annprocess")
+
+    jmhAnnotationProcessor("org.openjdk.jmh:jmh-generator-annprocess")
+}
+
+plugins {
+    id("me.champeau.jmh")
 }

@@ -15,7 +15,7 @@ public class CacheProxy implements DBClientService {
         this.cache = cache;
     }
 
-    public static DBClientService wrap(DBClientService wrappedService, HwCache<Long, Client> cache) {
+    public static DBClientService wrapDbService(DBClientService wrappedService, HwCache<Long, Client> cache) {
         return new CacheProxy(wrappedService, cache);
     }
 

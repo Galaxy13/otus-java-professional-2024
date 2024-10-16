@@ -16,7 +16,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
             protected boolean removeEldestEntry(Map.Entry<K, SoftReference<V>> eldest) {
                 if (size() > cacheSize) {
                     V value = eldest.getValue().get();
-                    notifyListeners(eldest.getKey(), value, "remove on overfill");
+                    notifyListeners(eldest.getKey(), value, "overfill");
                     return true;
                 }
                 return false;
@@ -74,5 +74,6 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     private void clearCache() {
         this.cache.entrySet().removeIf(entry -> entry.getValue().get() == null);
+        notifyListeners(null, null, "clear");
     }
 }
