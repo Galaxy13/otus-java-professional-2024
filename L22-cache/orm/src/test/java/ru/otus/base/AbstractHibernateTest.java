@@ -14,8 +14,8 @@ import ru.otus.crm.dbmigrations.MigrationsExecutorFlyway;
 import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Phone;
-import ru.otus.crm.service.DBServiceClient;
-import ru.otus.crm.service.DbServiceClientImpl;
+import ru.otus.crm.service.DBClientService;
+import ru.otus.crm.service.DbClientServiceImpl;
 
 import static ru.otus.demo.DbServiceDemo.HIBERNATE_CFG_FILE;
 
@@ -25,7 +25,7 @@ public abstract class AbstractHibernateTest {
     protected SessionFactory sessionFactory;
     protected TransactionManagerHibernate transactionManager;
     protected DataTemplateHibernate<Client> clientTemplate;
-    protected DBServiceClient dbServiceClient;
+    protected DBClientService dbClientService;
 
     @BeforeAll
     public static void init() {
@@ -56,7 +56,7 @@ public abstract class AbstractHibernateTest {
 
         transactionManager = new TransactionManagerHibernate(sessionFactory);
         clientTemplate = new DataTemplateHibernate<>(Client.class);
-        dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate);
+        dbClientService = new DbClientServiceImpl(transactionManager, clientTemplate);
     }
 
     protected EntityStatistics getUsageStatistics() {

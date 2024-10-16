@@ -5,11 +5,11 @@ import ru.otus.crm.model.Client;
 import java.util.List;
 import java.util.Optional;
 
-public interface DBServiceClient {
+public interface DBClientService {
 
-    Client saveClient(Client client);
+    Client saveClient(Client entity);
 
-    Optional<Client> getClient(long id);
+    Optional<Client> getById(long id);
 
     List<Client> findAll();
 }
