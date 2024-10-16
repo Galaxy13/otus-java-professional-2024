@@ -1,4 +1,5 @@
 dependencies {
+    implementation(project(":L22-cache:cache"))
     implementation("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 

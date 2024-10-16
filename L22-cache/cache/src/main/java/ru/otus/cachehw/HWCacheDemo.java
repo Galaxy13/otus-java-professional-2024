@@ -31,7 +31,8 @@ public class HWCacheDemo {
             logger.info("getValue: {}", cache.get("key" + i));
         }
 
-//        cache.remove("1");
+        cache.remove("key9");
+        cache.remove("key10");
         cache.removeListener(listener);
     }
 }
