@@ -18,13 +18,4 @@ dependencies {
 
     implementation("org.testcontainers:junit-jupiter")
     implementation("org.testcontainers:postgresql")
-
-    jmh("org.openjdk.jmh:jmh-core")
-    jmh("org.openjdk.jmh:jmh-generator-annprocess")
-
-    jmhAnnotationProcessor("org.openjdk.jmh:jmh-generator-annprocess")
-}
-
-plugins {
-    id("me.champeau.jmh")
 }

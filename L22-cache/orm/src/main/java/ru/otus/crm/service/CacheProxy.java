@@ -1,6 +1,6 @@
 package ru.otus.crm.service;
 
-import ru.otus.cachehw.HwCache;
+import ru.otus.cache.HwCache;
 import ru.otus.crm.model.Client;
 
 import java.util.List;
