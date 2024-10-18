@@ -10,9 +10,5 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("org.assertj:assertj-core")
-
-    implementation("ch.qos.logback:logback-classic")
-    implementation("org.flywaydb:flyway-core")
-    implementation("org.postgresql:postgresql")
 }
 

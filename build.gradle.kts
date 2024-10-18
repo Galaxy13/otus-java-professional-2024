@@ -9,7 +9,7 @@ plugins {
     id("io.spring.dependency-management")
     id("org.springframework.boot") apply false
     id("name.remal.sonarlint")
-    id("com.bmuschko.docker-remote-api")
+    id("me.champeau.jmh")
 }
 
 idea {
@@ -35,6 +35,7 @@ allprojects {
     val protobufBom: String by project
     val guava: String by project
     val asm: String by project
+    val jmh: String by project
 
     apply(plugin = "io.spring.dependency-management")
     dependencyManagement {
@@ -47,6 +48,8 @@ allprojects {
             dependency("com.google.guava:guava:$guava")
             dependency("org.ow2.asm:asm-commons:$asm")
             dependency("org.ow2.asm:asm-util:$asm")
+            dependency("org.openjdk.jmh:jmh-core:$jmh")
+            dependency("org.openjdk.jmh:jmh-generator-annprocess:$jmh")
         }
     }
 
