@@ -1,6 +1,7 @@
 package ru.otus.crm.service;
 
 import ru.otus.cache.HwCache;
+import ru.otus.cache.MyCache;
 import ru.otus.crm.model.Client;
 
 import java.util.List;
@@ -15,8 +16,12 @@ public class CacheProxy implements DBClientService {
         this.cache = cache;
     }
 
-    public static DBClientService wrapDbService(DBClientService wrappedService, HwCache<Long, Client> cache) {
+    public static DBClientService wrapWithCache(DBClientService wrappedService, HwCache<Long, Client> cache) {
         return new CacheProxy(wrappedService, cache);
+    }
+
+    public static DBClientService wrap(DBClientService wrappedService) {
+        return new CacheProxy(wrappedService, MyCache.create());
     }
 
     @Override
