@@ -8,7 +8,7 @@ import java.lang.ref.SoftReference;
 import java.util.*;
 
 public class MyCache<K, V> implements HwCache<K, V> {
-    private static Logger logger = LoggerFactory.getLogger(MyCache.class);
+    private static final Logger logger = LoggerFactory.getLogger(MyCache.class);
 
     private final Map<K, SoftReference<V>> cache;
     private final Map<SoftReference<V>, K> valueMap;

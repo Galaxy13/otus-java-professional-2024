@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-// -Xmx256m -Xms256m
+// -Xmx128m -Xms128m
 class CacheConcurrencyDemo {
     private static final Logger logger = LoggerFactory.getLogger(CacheConcurrencyDemo.class);
     private static final Random rand = new Random();
@@ -17,7 +17,7 @@ class CacheConcurrencyDemo {
     }
 
     public static void testCacheConcurrency() {
-        HwCache<Integer, Integer> cache = MyCache.create(1_000_000);
+        HwCache<Integer, Integer> cache = MyCache.create(350_000);
         cache.addListener((key, value, operation) -> {
             if (operation.equals("gc")) {
                 logger.info("key:{} value:{} ops:{}", key, value, operation);
@@ -28,7 +28,7 @@ class CacheConcurrencyDemo {
         for (int i = 0; i < 10; i++) {
             threadPoolPut.submit(() -> {
                 while (true) {
-                    cache.put(rand.nextInt(0, 10_000_001), rand.nextInt(0, 10_000_001));
+                    cache.put(rand.nextInt(), rand.nextInt());
                 }
             });
         }
@@ -37,7 +37,7 @@ class CacheConcurrencyDemo {
         for (int i = 0; i < 10; i++) {
             threadPoolGet.submit(() -> {
                 while (true) {
-                    cache.get(rand.nextInt(0, 10_000_001));
+                    cache.get(rand.nextInt());
                 }
             });
         }
