@@ -17,7 +17,7 @@ class CacheConcurrencyDemo {
     }
 
     public static void testCacheConcurrency() {
-        HwCache<Integer, Integer> cache = MyCache.create(10_000_000);
+        HwCache<Integer, Integer> cache = MyCache.create(1_000_000);
         cache.addListener((key, value, operation) -> {
             if (operation.equals("gc")) {
                 logger.info("key:{} value:{} ops:{}", key, value, operation);
