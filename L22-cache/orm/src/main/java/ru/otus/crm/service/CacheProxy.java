@@ -38,11 +38,7 @@ public class CacheProxy implements DBClientService {
             return cachedClient;
         }
         var remoteClient = wrappedService.getById(id);
-        if (remoteClient.isPresent()) {
-            cache.put(id, remoteClient.get());
-        } else {
-            cache.remove(id);
-        }
+        remoteClient.ifPresent(client -> cache.put(id, client));
         return remoteClient;
     }
 

@@ -19,13 +19,15 @@ public class MyCache<K, V> implements HwCache<K, V> {
     @Override
     public void put(K key, V value) {
         cache.put(key, value);
-        this.listeners.forEach(listener -> listener.notify(key, value, "put"));
+        notifyListeners(key, value, "put");
     }
 
     @Override
     public void remove(K key) {
-        Optional<V> removedValue = Optional.ofNullable(cache.remove(key));
-        notifyListeners(key, removedValue.orElse(null), null);
+        V oldValue = cache.remove(key);
+        if (oldValue != null) {
+            notifyListeners(key, oldValue, "remove");
+        }
     }
 
     @Override
