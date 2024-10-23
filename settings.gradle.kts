@@ -10,6 +10,8 @@ include("L16-io:homework")
 include("L18-jdbc:demo")
 include("L18-jdbc:homework")
 include("L21-jpql:homework")
+include("L22-cache:cache")
+include("L22-cache:orm")
 
 pluginManagement {
     val jgitver: String by settings
@@ -21,6 +23,7 @@ pluginManagement {
     val sonarlint: String by settings
     val spotless: String by settings
     val gradleDockerPlugin: String by settings
+    val jmhPlugin: String by settings
 
     plugins {
         id("fr.brouillard.oss.gradle.jgitver") version jgitver
@@ -32,5 +35,6 @@ pluginManagement {
         id("name.remal.sonarlint") version sonarlint
         id("com.diffplug.spotless") version spotless
         id("com.bmuschko.docker-remote-api") version gradleDockerPlugin
+        id("me.champeau.jmh") version jmhPlugin
     }
 }
