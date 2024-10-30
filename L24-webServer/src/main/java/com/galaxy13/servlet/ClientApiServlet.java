@@ -44,7 +44,7 @@ public class ClientApiServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         Optional<Client> client = createClient(request);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

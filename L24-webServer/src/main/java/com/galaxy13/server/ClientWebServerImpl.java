@@ -70,7 +70,7 @@ public class ClientWebServerImpl implements ClientWebServer {
     }
 
     private void initContext() {
-        ResourceHandler resourceHandler = createResourceHandler("static", "index.html");
+        ResourceHandler resourceHandler = createResourceHandler();
         ServletContextHandler servletContextHandler = createServletContextHandler();
 
         Handler.Sequence sequence = new Handler.Sequence();
@@ -99,12 +99,12 @@ public class ClientWebServerImpl implements ClientWebServer {
         return securityHandler;
     }
 
-    private ResourceHandler createResourceHandler(String resourcesDirectory, String welcomePage) {
+    private ResourceHandler createResourceHandler() {
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirAllowed(false);
-        resourceHandler.setWelcomeFiles(welcomePage);
+        resourceHandler.setWelcomeFiles("index.html");
         resourceHandler.setBaseResourceAsString(
-                FileSystemHelper.localFileNameOrResourceNameToFullPath(resourcesDirectory));
+                FileSystemHelper.localFileNameOrResourceNameToFullPath("static"));
         return resourceHandler;
     }
 
