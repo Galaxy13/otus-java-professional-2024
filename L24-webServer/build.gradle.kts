@@ -1,3 +1,9 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+plugins {
+    id("com.github.johnrengelman.shadow")
+}
+
 dependencies {
     implementation("ch.qos.logback:logback-classic")
     implementation("com.google.code.gson:gson")
@@ -23,4 +29,19 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql")
 
     implementation("org.postgresql:postgresql")
+}
+
+tasks {
+    named<ShadowJar>("shadowJar") {
+        archiveBaseName.set("server")
+        archiveVersion.set("0.1")
+        archiveClassifier.set("")
+        manifest {
+            attributes(mapOf("Main-Class" to "com.galaxy13.ClientORMWebServer"))
+        }
+    }
+
+    build {
+        dependsOn(shadowJar)
+    }
 }

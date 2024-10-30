@@ -13,6 +13,10 @@ import ru.otus.crm.service.DBClientService;
 import ru.otus.crm.service.DbClientServiceImpl;
 
 public class ORMInitialize {
+    private ORMInitialize() {
+        throw new UnsupportedOperationException("Utility class. Initializing prohibited");
+    }
+
     public static DBClientService initializeHibernate(String hibernateConfigFile) {
         var configuration = new Configuration().configure(hibernateConfigFile);
 

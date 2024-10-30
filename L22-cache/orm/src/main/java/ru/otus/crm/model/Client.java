@@ -51,6 +51,12 @@ public class Client implements Cloneable {
         this.phones = phones;
     }
 
+    public Client(String name, Address address, List<Phone> phones) {
+        this.name = name;
+        this.address = address;
+        this.phones = phones;
+    }
+
     @Override
     @SuppressWarnings({"java:S2975", "java:S1182"})
     public Client clone() {

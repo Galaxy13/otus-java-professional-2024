@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<head>
+    <title>Пользователи</title>
+    <script>
+        function getUserById() {
+            const userIdTextBox = document.getElementById('userIdTextBox');
+            const userDataContainer = document.getElementById('userDataContainer');
+            const id = userIdTextBox.value;
+            fetch('/api/client/' + id)
+                .then(response => response.json())
+                .then(user => userDataContainer.innerHTML = JSON.stringify(user));
+        }
+    </script>
+
+    <script>
+        function createNewUser() {
+            const clientName = document.getElementById("clientNameTextBox").value;
+            const address = document.getElementById("clientAddressTextBox").value;
+            const phone = document.getElementById("clientTelephoneTextBox").value;
+            const newClientContainer = document.getElementById("newClientContainer");
+            if (clientName === "") {
+                newClientContainer.innerHTML = "Client name is required parameter"
+                return;
+            }
+            const clientInfo = {
+                name: clientName,
+                address: address,
+                phone: phone,
+            }
+            fetch("/api/client/", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify(clientInfo),
+            }).then(response => response.json())
+                .then(client => newClientContainer.innerHTML = JSON.stringify(client))
+        }
+    </script>
+</head>
+
+<body>
+<h4>Получить пользователя по id</h4>
+<label for="userIdTextBox"></label><input id="userIdTextBox" placeholder="Введите id пользователя" type="text"
+                                          value="3">
+<button onclick="getUserById()">Получить</button>
+<pre id="userDataContainer"></pre>
+
+<h4>Все пользователи</h4>
+<table style="width: 400px">
+    <thead>
+    <tr>
+        <td style="width: 50px">Id</td>
+        <td style="width: 150px">Имя</td>
+        <td style="width: 100px">Адрес</td>
+        <td style="width: 100px">Телефон</td>
+    </tr>
+    </thead>
+    <tbody>
+    <#list clients as client>
+    <tr>
+        <td>${client.id}</td>
+        <td>${client.name}</td>
+        <td>${client.address}</td>
+        <td>${client.phone}</td>
+    </tr>
+    <#else>
+    <tr></tr>
+    </
+    #list>
+    </tbody>
+</table>
+
+<h4>Добавить нового пользователя</h4>
+<label for="clientNameTextBox"></label>
+<input id="clientNameTextBox" placeholder="Введите имя нового пользователя" type="text">
+<label for="clientAddressTextBox"></label>
+<input id="clientAddressTextBox" placeholder="Введите улицу проживания (опционально)" type="text">
+<label for="clientTelephoneTextBox"></label>
+<input id="clientTelephoneTextBox" placeholder="Введите номер телефона (опционально)" type="text">
+<button onclick="createNewUser()">Создать клиента</button>
+
+<pre id="newClientContainer"></pre>
+</body>
+</html>

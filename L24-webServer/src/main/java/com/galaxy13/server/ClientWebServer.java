@@ -5,5 +5,5 @@ public interface ClientWebServer {
 
     void stop();
 
-    void join();
+    void join() throws InterruptedException;
 }
