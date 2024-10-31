@@ -24,6 +24,7 @@ public class AdminPageServlet extends HttpServlet {
         this.dbClientService = dbClientService;
     }
 
+    @SuppressWarnings("java:S1989")
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");

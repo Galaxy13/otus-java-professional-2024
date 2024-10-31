@@ -30,6 +30,7 @@ public class ClientApiServlet extends HttpServlet {
         this.gson = gson;
     }
 
+    @SuppressWarnings("java:S1989")
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Client client = dbClientService.getById(extractIdFromRequest(request)).orElse(null);
@@ -40,6 +41,7 @@ public class ClientApiServlet extends HttpServlet {
         }
     }
 
+    @SuppressWarnings("java:S1989")
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Client client = createClient(request);
