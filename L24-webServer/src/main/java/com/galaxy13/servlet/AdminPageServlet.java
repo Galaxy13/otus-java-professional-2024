@@ -5,8 +5,6 @@ import com.galaxy13.processor.TemplateProcessor;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.otus.crm.service.DBClientService;
 
 import java.io.IOException;
@@ -16,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 public class AdminPageServlet extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(AdminPageServlet.class);
     private static final String ADMIN_PAGE = "clients.html";
 
     private final transient TemplateProcessor templateProcessor;
@@ -28,7 +25,7 @@ public class AdminPageServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
         List<TemplateClient> clients = dbClientService
                 .findAll()
@@ -40,8 +37,6 @@ public class AdminPageServlet extends HttpServlet {
         String page = templateProcessor.getPage(ADMIN_PAGE, data);
         try (PrintWriter out = response.getWriter()) {
             out.write(page);
-        } catch (IOException e) {
-            logger.error("Error getting writer to response", e);
         }
     }
 }

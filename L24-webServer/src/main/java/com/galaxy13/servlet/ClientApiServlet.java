@@ -17,7 +17,6 @@ import ru.otus.crm.service.DBClientService;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
-import java.util.Optional;
 
 public class ClientApiServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(ClientApiServlet.class);
@@ -32,31 +31,23 @@ public class ClientApiServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Client client = dbClientService.getById(extractIdFromRequest(request)).orElse(null);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         try (ServletOutputStream out = response.getOutputStream()) {
             out.print(gson.toJson(client));
-        } catch (IOException e) {
-            logger.error("Error while sending response", e);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        Optional<Client> client = createClient(request);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Client client = createClient(request);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         try (ServletOutputStream out = response.getOutputStream()) {
-            if (client.isEmpty()) {
-                out.print("Client has no name");
-                return;
-            }
-            Client ormClient = dbClientService.saveClient(client.get());
+            Client ormClient = dbClientService.saveClient(client);
             out.print(gson.toJson(ormClient));
-        } catch (IOException e) {
-            logger.error("Error while sending response", e);
         }
     }
 
@@ -66,22 +57,22 @@ public class ClientApiServlet extends HttpServlet {
         return Long.parseLong(id);
     }
 
-    private Optional<Client> createClient(HttpServletRequest request) {
+    private Client createClient(HttpServletRequest request) {
         JsonObject jsonObject;
         try (Reader reader = request.getReader()) {
             jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
         } catch (IOException e) {
             logger.error("Error while parsing request", e);
-            return Optional.empty();
+            return new Client();
         }
         String requestName = jsonObject.get("name").getAsString();
         String requestPhone = jsonObject.get("phone").getAsString();
         String requestAddress = jsonObject.get("address").getAsString();
         if (requestName == null) {
-            return Optional.empty();
+            return new Client();
         }
         Address address = new Address(requestAddress);
         List<Phone> phones = List.of(new Phone(requestPhone));
-        return Optional.of(new Client(requestName, address, phones));
+        return new Client(requestName, address, phones);
     }
 }
