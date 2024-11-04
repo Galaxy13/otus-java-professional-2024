@@ -1,6 +1,5 @@
 package ru.otus;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,6 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import ru.otus.appcontainer.AppComponentsContainerImpl;
 import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
+import ru.otus.appcontainer.api.Qualifier;
 import ru.otus.config.AppConfig;
 import ru.otus.services.*;
 
@@ -16,8 +16,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.*;
 
 class AppTest {
 
@@ -80,7 +79,6 @@ class AppTest {
                 .isInstanceOf(Exception.class);
     }
 
-    @Disabled("Реализован ранний отказ при наличии дублирующихся компонентов")
     @DisplayName(
             "При попытке достать из контекста отсутствующий или дублирующийся компонент, должно выкидываться исключение")
     @Test
@@ -94,33 +92,125 @@ class AppTest {
         assertThatCode(() -> ctx.getAppComponent("equationPreparer3")).isInstanceOf(Exception.class);
     }
 
-    @AppComponentsContainerConfig(order = 1)
+
+    @DisplayName("Создание контекста с дублирующимися компонентами")
+    @Test
+    void shouldCreateContextFromQualifierAndExtract() {
+        var ctx = new AppComponentsContainerImpl(ConfigWithTwoSameComponentsWithQualifier.class);
+
+        assertThatThrownBy(() -> ctx.getAppComponent(IOService.class)).isInstanceOf(Exception.class);
+
+        IOService ioService = ctx.getAppComponent("ioService1");
+
+        assertThat(ioService).isNotNull().isInstanceOf(IOService.class);
+
+        assertThat(ctx.getAppComponent(PlayerService.class)).isInstanceOf(PlayerService.class);
+    }
+
+    @DisplayName("Создание контекста из множества конфигурационных классов")
+    @Test
+    void shouldCreateContextFromMultipleConfigs() {
+        var ctx = new AppComponentsContainerImpl(Config1.class, Config2.class);
+
+        GameProcessor gameProcessor = ctx.getAppComponent(GameProcessor.class);
+
+        assertThat(gameProcessor).isNotNull().isInstanceOf(GameProcessor.class);
+
+        assertThatThrownBy(() -> ctx.getAppComponent(EquationPreparer.class)).isInstanceOf(Exception.class);
+
+        EquationPreparer equationPreparer = ctx.getAppComponent("equationPreparer");
+        EquationPreparer equationPreparerAlt = ctx.getAppComponent("equationPreparerAlt");
+
+        assertThat(equationPreparer).isNotNull().isInstanceOf(EquationPreparer.class);
+
+        assertThat(equationPreparerAlt)
+                .isNotNull()
+                .isInstanceOf(EquationPreparer.class)
+                .isNotSameAs(equationPreparer);
+
+    }
+
+    @AppComponentsContainerConfig()
     public static class ConfigWithTwoComponentsWithSameName {
         public ConfigWithTwoComponentsWithSameName() {
             // empty constructor
         }
 
-        @AppComponent(order = 1, name = "equationPreparer")
+        @AppComponent(name = "equationPreparer")
         public EquationPreparer equationPreparer1() {
             return new EquationPreparerImpl();
         }
 
-        @AppComponent(order = 1, name = "equationPreparer")
+        @AppComponent(name = "equationPreparer")
         public IOService ioService() {
             return new IOServiceStreams(System.out, System.in);
         }
     }
 
-    @AppComponentsContainerConfig(order = 1)
+    @AppComponentsContainerConfig()
     public static class ConfigWithTwoSameComponents {
 
-        @AppComponent(order = 1, name = "equationPreparer1")
+        @AppComponent(name = "equationPreparer1")
         public EquationPreparer equationPreparer1() {
             return new EquationPreparerImpl();
         }
 
-        @AppComponent(order = 1, name = "equationPreparer2")
+        @AppComponent(name = "equationPreparer2")
         public EquationPreparer equationPreparer2() {
+            return new EquationPreparerImpl();
+        }
+    }
+
+    @AppComponentsContainerConfig()
+    public static class ConfigWithTwoSameComponentsWithQualifier {
+
+        @AppComponent(name = "playerService")
+        public PlayerService playerService(@Qualifier(component = "ioService2") IOService ioService) {
+            return new PlayerServiceImpl(ioService);
+        }
+
+        @AppComponent(name = "ioService1")
+        public IOService ioService1() {
+            return new IOServiceStreams(System.out, System.in);
+        }
+
+        @AppComponent(name = "ioService2")
+        public IOService ioService2() {
+            return new IOServiceStreams(System.out, System.in);
+        }
+    }
+
+    @AppComponentsContainerConfig()
+    public static class Config1 {
+
+        @AppComponent(name = "equationPreparer")
+        public EquationPreparer equationPreparer() {
+            return new EquationPreparerImpl();
+        }
+
+        @AppComponent(name = "gameProcessor")
+        public GameProcessor gameProcessor(
+                IOService ioService, PlayerService playerService, @Qualifier(component = "equationPreparerAlt") EquationPreparer equationPreparer) {
+            return new GameProcessorImpl(ioService, equationPreparer, playerService);
+        }
+    }
+
+    @AppComponentsContainerConfig()
+    public static class Config2 {
+        @AppComponent(name = "playerService")
+        public PlayerService playerService(IOService ioService) {
+            return new PlayerServiceImpl(ioService);
+        }
+
+
+        @SuppressWarnings("squid:S106")
+        @AppComponent(name = "ioService")
+        public IOService ioService() {
+            return new IOServiceStreams(System.out, System.in);
+        }
+
+        @AppComponent(name = "equationPreparerAlt")
+        public EquationPreparer equationPreparer() {
             return new EquationPreparerImpl();
         }
     }

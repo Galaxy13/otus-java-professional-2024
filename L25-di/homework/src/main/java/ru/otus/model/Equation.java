@@ -3,12 +3,10 @@ package ru.otus.model;
 public abstract class Equation {
     protected final int leftPart;
     protected final int rightPart;
-    protected final int result;
 
     protected Equation(int leftPart, int rightPart) {
         this.leftPart = leftPart;
         this.rightPart = rightPart;
-        this.result = calcResult();
     }
 
     protected abstract int calcResult();
@@ -22,6 +20,6 @@ public abstract class Equation {
     }
 
     public int getResult() {
-        return result;
+        return calcResult();
     }
 }
