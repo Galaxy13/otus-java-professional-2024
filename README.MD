@@ -20,6 +20,14 @@
 8.
     - [x] Serialization
 9.
-    - [ ] JDBC
+   - [X] JDBC
+10.
+   - [X] JPQL
+11.
+   - [X] Caching
+12.
+   - [ ] Web Server
+13.
+   - [ ] Dependency Injection
 
 **Student**: Khortov Gennadiy

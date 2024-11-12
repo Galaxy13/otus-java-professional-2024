@@ -12,6 +12,7 @@ include("L18-jdbc:homework")
 include("L21-jpql:homework")
 include("L22-cache:cache")
 include("L22-cache:orm")
+include("L25-di:homework")
 include("L24-webServer")
 
 pluginManagement {
