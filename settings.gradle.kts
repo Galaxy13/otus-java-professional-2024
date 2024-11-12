@@ -14,6 +14,7 @@ include("L22-cache:cache")
 include("L22-cache:orm")
 include("L25-di:homework")
 include("L24-webServer")
+include("L28-springDataJdbc")
 
 pluginManagement {
     val jgitver: String by settings

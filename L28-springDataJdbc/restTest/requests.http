@@ -1,0 +1,17 @@
+POST http://localhost:8080/api/client/
+Content-Type: application/json
+
+{
+  "name": "Foma",
+  "address": {
+    "street": "Zalupki"
+  },
+  "phones": [
+    {
+      "number": "88005553535"
+    }
+  ]
+}
+
+###
+GET http://localhost:8080/api/client/all
