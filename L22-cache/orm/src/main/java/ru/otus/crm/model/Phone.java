@@ -22,6 +22,9 @@ public class Phone {
     @Column(name = "number")
     private String number;
 
+    public Phone(String number) {
+        this.number = number;
+    }
 
     public static Phone clonePhone(Phone phone) {
         if (phone == null) return null;
