@@ -14,7 +14,7 @@
             }
             const clientInfo = {
                 name: clientName,
-                address: address,
+                street: address,
                 phone: phone,
             }
             fetch("/api/client/", {
@@ -24,14 +24,41 @@
                 },
                 body: JSON.stringify(clientInfo),
             }).then(response => response.json())
-                .then(client => newClientContainer.innerHTML = JSON.stringify(client))
+                .then(client => {
+                    newClientContainer.innerHTML = JSON.stringify(client);
+                    fillClientTable(client)
+                })
+        }
+    </script>
+
+    <script>
+        window.onload = function findAllClients() {
+            fetch("/api/client/all")
+                .then(response => response.json())
+                .then(clients => {
+                    clients.forEach(client => {
+                        fillClientTable(client)
+                    })
+                })
+        }
+    </script>
+
+    <script>
+        function fillClientTable(client) {
+            let table = document.getElementById("clientsTable");
+            let row = table.insertRow();
+
+            row.insertCell(0).textContent = client.id;
+            row.insertCell(1).textContent = client.name;
+            row.insertCell(2).textContent = client.address;
+            row.insertCell(3).textContent = client.phone;
         }
     </script>
 </head>
 
 <body>
 <h4>Все клиенты</h4>
-<table style="width: 400px">
+<table id="clientsTable" style="width: 400px">
     <thead>
     <tr>
         <td style="width: 50px">Id</td>
@@ -41,17 +68,6 @@
     </tr>
     </thead>
     <tbody>
-    <#list clients as client>
-    <tr>
-        <td>${client.id}</td>
-        <td>${client.name}</td>
-        <td>${client.address}</td>
-        <td>${client.phone}</td>
-    </tr>
-    <#else>
-    <tr></tr>
-    </
-    #list>
     </tbody>
 </table>
 

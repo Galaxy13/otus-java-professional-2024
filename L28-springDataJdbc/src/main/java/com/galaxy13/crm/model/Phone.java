@@ -5,4 +5,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Table(name = "phone")
 public record Phone(@Id Long phoneId, String number) {
+    public Phone(String number) {
+        this(null, number);
+    }
 }
