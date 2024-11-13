@@ -1,16 +1,14 @@
 package com.galaxy13.crm.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
-import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
 @ToString
@@ -23,9 +21,8 @@ public class Client {
     @MappedCollection(idColumn = "address_id")
     private Address address;
 
-    @JsonProperty("phone")
+    @JsonProperty("phones")
     @MappedCollection(idColumn = "client_id")
-//    @JsonDeserialize(using = PhoneDeserializer.class)
-    private List<Phone> phones;
+    private Set<Phone> phones;
 }
 

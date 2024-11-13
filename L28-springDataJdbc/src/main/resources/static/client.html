@@ -14,8 +14,8 @@
             }
             const clientInfo = {
                 name: clientName,
-                street: address,
-                phone: phone,
+                address: address,
+                phones: [phone],
             }
             fetch("/api/client/", {
                 method: 'POST',
@@ -28,6 +28,9 @@
                     newClientContainer.innerHTML = JSON.stringify(client);
                     fillClientTable(client)
                 })
+            document.getElementById("clientNameTextBox").value = "";
+            document.getElementById("clientAddressTextBox").value = "";
+            document.getElementById("clientTelephoneTextBox").value = "";
         }
     </script>
 
@@ -37,6 +40,7 @@
                 .then(response => response.json())
                 .then(clients => {
                     clients.forEach(client => {
+                        console.log(client);
                         fillClientTable(client)
                     })
                 })
@@ -51,7 +55,7 @@
             row.insertCell(0).textContent = client.id;
             row.insertCell(1).textContent = client.name;
             row.insertCell(2).textContent = client.address;
-            row.insertCell(3).textContent = client.phone;
+            row.insertCell(3).textContent = client.phones.join("/n");
         }
     </script>
 </head>

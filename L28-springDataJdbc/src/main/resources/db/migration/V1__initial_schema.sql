@@ -1,8 +1,7 @@
 create table client
 (
     id         bigserial not null primary key,
-    name       varchar(50),
-    address_id bigint
+    name varchar(50)
 );
 
 create table address
