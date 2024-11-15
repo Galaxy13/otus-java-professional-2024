@@ -29,9 +29,15 @@ public class ClientResultSetExtractor implements ResultSetExtractor<List<Client>
                 if (currentClient != null) {
                     clientList.add(currentClient);
                 }
-                Address address = new Address(addressId, street);
-                Phone phone = new Phone(phoneId, number);
-                currentClient = new Client(clientId, clientName, address, Set.of(phone));
+                Address address = null;
+                if (addressId != 0) {
+                    address = new Address(addressId, street);
+                }
+                Set<Phone> phones = Set.of();
+                if (phoneId != 0) {
+                    phones = Set.of(new Phone(phoneId, number));
+                }
+                currentClient = new Client(clientId, clientName, address, phones);
             } else {
                 Phone phone = new Phone(phoneId, number);
                 currentClient.getPhones().add(phone);

@@ -4,6 +4,7 @@ import com.galaxy13.crm.dto.ClientDTO;
 import com.galaxy13.crm.model.Client;
 import com.galaxy13.crm.service.DBServiceClient;
 import lombok.AllArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class ClientRestController {
     }
 
     @PostMapping("/api/client/")
-    public ClientDTO createClient(@RequestBody Client client) {
+    public ClientDTO createClient(@Validated @RequestBody Client client) {
         Client savedClient = dbServiceClient.saveClient(client);
         return new ClientDTO(savedClient);
     }

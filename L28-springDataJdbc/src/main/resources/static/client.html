@@ -5,17 +5,23 @@
     <script>
         function createNewClient() {
             const clientName = document.getElementById("clientNameTextBox").value;
-            const address = document.getElementById("clientAddressTextBox").value;
-            const phone = document.getElementById("clientTelephoneTextBox").value;
+            let address = document.getElementById("clientAddressTextBox").value;
+            let phone = [document.getElementById("clientTelephoneTextBox").value];
             const newClientContainer = document.getElementById("newClientContainer");
             if (clientName === "") {
                 newClientContainer.innerHTML = "Client name is required parameter"
                 return;
             }
+            if (address === "") {
+                address = null;
+            }
+            if (phone[0] === "") {
+                phone = [];
+            }
             const clientInfo = {
                 name: clientName,
                 address: address,
-                phones: [phone],
+                phones: phone,
             }
             fetch("/api/client/", {
                 method: 'POST',
