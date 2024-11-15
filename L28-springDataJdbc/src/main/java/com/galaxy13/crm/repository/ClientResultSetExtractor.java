@@ -20,9 +20,9 @@ public class ClientResultSetExtractor implements ResultSetExtractor<List<Client>
         while (rs.next()) {
             long clientId = rs.getLong("client_id");
             String clientName = rs.getString("client_name");
-            long addressId = rs.getLong("address_id");
+            Long addressId = rs.getLong("address_id");
             String street = rs.getString("street");
-            long phoneId = rs.getLong("phone_id");
+            Long phoneId = rs.getLong("phone_id");
             String number = rs.getString("phone_number");
 
             if (currentClient == null || currentClient.getId() != clientId) {
