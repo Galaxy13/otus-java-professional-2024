@@ -5,17 +5,23 @@
     <script>
         function createNewClient() {
             const clientName = document.getElementById("clientNameTextBox").value;
-            const address = document.getElementById("clientAddressTextBox").value;
-            const phone = document.getElementById("clientTelephoneTextBox").value;
+            let address = document.getElementById("clientAddressTextBox").value;
+            let phone = [document.getElementById("clientTelephoneTextBox").value];
             const newClientContainer = document.getElementById("newClientContainer");
             if (clientName === "") {
                 newClientContainer.innerHTML = "Client name is required parameter"
                 return;
             }
+            if (address === "") {
+                address = null;
+            }
+            if (phone[0] === "") {
+                phone = [];
+            }
             const clientInfo = {
                 name: clientName,
                 address: address,
-                phone: phone,
+                phones: phone,
             }
             fetch("/api/client/", {
                 method: 'POST',
@@ -24,14 +30,45 @@
                 },
                 body: JSON.stringify(clientInfo),
             }).then(response => response.json())
-                .then(client => newClientContainer.innerHTML = JSON.stringify(client))
+                .then(client => {
+                    newClientContainer.innerHTML = JSON.stringify(client);
+                    fillClientTable(client)
+                })
+            document.getElementById("clientNameTextBox").value = "";
+            document.getElementById("clientAddressTextBox").value = "";
+            document.getElementById("clientTelephoneTextBox").value = "";
+        }
+    </script>
+
+    <script>
+        window.onload = function findAllClients() {
+            fetch("/api/client/all")
+                .then(response => response.json())
+                .then(clients => {
+                    clients.forEach(client => {
+                        console.log(client);
+                        fillClientTable(client)
+                    })
+                })
+        }
+    </script>
+
+    <script>
+        function fillClientTable(client) {
+            let table = document.getElementById("clientsTable");
+            let row = table.insertRow();
+
+            row.insertCell(0).textContent = client.id;
+            row.insertCell(1).textContent = client.name;
+            row.insertCell(2).textContent = client.address;
+            row.insertCell(3).textContent = client.phones.join("/n");
         }
     </script>
 </head>
 
 <body>
 <h4>Все клиенты</h4>
-<table style="width: 400px">
+<table id="clientsTable" style="width: 400px">
     <thead>
     <tr>
         <td style="width: 50px">Id</td>
@@ -41,17 +78,6 @@
     </tr>
     </thead>
     <tbody>
-    <#list clients as client>
-    <tr>
-        <td>${client.id}</td>
-        <td>${client.name}</td>
-        <td>${client.address}</td>
-        <td>${client.phone}</td>
-    </tr>
-    <#else>
-    <tr></tr>
-    </
-    #list>
     </tbody>
 </table>
 
