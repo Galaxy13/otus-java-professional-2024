@@ -3,8 +3,6 @@ package com.galaxy13;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -13,40 +11,35 @@ import java.util.function.IntFunction;
 public class BinaryThreadPrinter {
     private static final Logger logger = LoggerFactory.getLogger(BinaryThreadPrinter.class);
 
-    private final ExecutorService threadPool;
+    private final Thread thread1;
+    private final Thread thread2;
     private final Lock lock;
     private final Condition condition;
-    private int last = 2;
+    private String lastThread = "t2";
 
-    public BinaryThreadPrinter(int nThreads) {
-        threadPool = Executors.newFixedThreadPool(nThreads);
+    public BinaryThreadPrinter() {
+        thread1 = new Thread(this::task, "t1");
+        thread2 = new Thread(this::task, "t2");
         lock = new ReentrantLock();
         condition = lock.newCondition();
     }
 
     public void start() {
-        try (threadPool) {
-            threadPool.submit(() -> task(1));
-            threadPool.submit(() -> task(2));
-        } finally {
-            threadPool.shutdown();
-        }
+        thread1.start();
+        thread2.start();
     }
 
-    private void task(int threadOrder) {
+    private void task() {
         lock.lock();
         try {
             countApplyLoop(
                     count -> count < 10,
                     1,
-                    count -> ++count,
-                    threadOrder);
+                    count -> ++count);
             countApplyLoop(
                     count -> count > 0,
                     10,
-                    count -> --count,
-                    threadOrder
-            );
+                    count -> --count);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } finally {
@@ -57,16 +50,16 @@ public class BinaryThreadPrinter {
     @SuppressWarnings("java:S5411")
     private void countApplyLoop(IntFunction<Boolean> loopCondition,
                                 int count,
-                                IntFunction<Integer> action,
-                                int threadOrder) throws InterruptedException {
+                                IntFunction<Integer> action) throws InterruptedException {
+        String threadName = Thread.currentThread().getName();
         while (loopCondition.apply(count)) {
-            while (last == threadOrder) {
+            while (threadName.equals(lastThread)) {
                 condition.await();
             }
             logger.info("{}", count);
             count = action.apply(count);
             sleep(1000);
-            last = threadOrder;
+            lastThread = threadName;
             condition.signalAll();
         }
     }
