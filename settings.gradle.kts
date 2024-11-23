@@ -18,6 +18,7 @@ include("L28-springDataJdbc")
 include("L31-executors")
 include("L33-concurrentCollections:QueueDemo")
 
+
 pluginManagement {
     val jgitver: String by settings
     val dependencyManagement: String by settings
