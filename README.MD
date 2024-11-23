@@ -3,31 +3,20 @@
 
 ### Tasks completed:
 
-1.
-    - [x] Gradle Introduction
-2.
-    - [x] Generics and Collections
-3.
-    - [x] Reflection
-4.
-    - [x] Garbage Collection
-5.
-   - [x] Byte-code, ASM
-6.
-   - [x] SOLID
-7.
-    - [x] Patterns
-8.
-    - [x] Serialization
-9.
-   - [X] JDBC
-10.
-   - [X] JPQL
-11.
-   - [X] Caching
-12.
-   - [ ] Web Server
-13.
-   - [ ] Dependency Injection
+- [x] Gradle Introduction
+- [x] Generics and Collections
+- [x] Reflection
+- [x] Garbage Collection
+- [x] Byte-code, ASM
+- [x] SOLID
+- [x] Patterns
+- [x] Serialization
+- [X] JDBC
+- [X] JPQ
+- [X] Caching
+- [X] Web Server
+- [X] Dependency Injection
+- [X] Spring App
+- [ ] Threads
 
 **Student**: Khortov Gennadiy
