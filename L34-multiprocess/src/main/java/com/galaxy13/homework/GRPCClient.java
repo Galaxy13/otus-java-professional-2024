@@ -12,6 +12,7 @@ public class GRPCClient {
     private static final int SERVER_PORT = 8190;
 
     public static void main(String[] args) {
+
         try (ExecutorService executor = Executors.newSingleThreadExecutor()) {
             var channel = ManagedChannelBuilder.forAddress(SERVER_HOST, SERVER_PORT)
                     .executor(executor)
@@ -19,6 +20,7 @@ public class GRPCClient {
                     .build();
             var seqClient = new SequenceClient(channel);
             seqClient.start();
+            channel.shutdown();
         }
     }
 }
