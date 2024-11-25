@@ -16,6 +16,7 @@ include("L25-di:homework")
 include("L24-webServer")
 include("L28-springDataJdbc")
 include("L31-executors")
+include("L34-multiprocess")
 
 pluginManagement {
     val jgitver: String by settings
@@ -26,7 +27,6 @@ pluginManagement {
     val protobufVer: String by settings
     val sonarlint: String by settings
     val spotless: String by settings
-    val gradleDockerPlugin: String by settings
     val jmhPlugin: String by settings
 
     plugins {
@@ -38,7 +38,6 @@ pluginManagement {
         id("com.google.protobuf") version protobufVer
         id("name.remal.sonarlint") version sonarlint
         id("com.diffplug.spotless") version spotless
-        id("com.bmuschko.docker-remote-api") version gradleDockerPlugin
         id("me.champeau.jmh") version jmhPlugin
     }
 }
