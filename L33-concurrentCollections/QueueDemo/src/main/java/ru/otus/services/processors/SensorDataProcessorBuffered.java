@@ -9,7 +9,7 @@ import ru.otus.lib.SensorDataBufferedWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -20,13 +20,13 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
 
     private final int bufferSize;
     private final SensorDataBufferedWriter writer;
-    private final PriorityQueue<SensorData> queue;
+    private final PriorityBlockingQueue<SensorData> queue;
     private final Lock lock = new ReentrantLock();
 
     public SensorDataProcessorBuffered(int bufferSize, SensorDataBufferedWriter writer) {
         this.bufferSize = bufferSize;
         this.writer = writer;
-        this.queue = new PriorityQueue<>(bufferSize, Comparator.comparing(SensorData::getMeasurementTime));
+        this.queue = new PriorityBlockingQueue<>(bufferSize, Comparator.comparing(SensorData::getMeasurementTime));
     }
 
     @Override
@@ -36,27 +36,22 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
             if (queue.size() == bufferSize) {
                 flush();
             }
-            queue.add(data);
         } finally {
             lock.unlock();
         }
+        queue.put(data);
     }
 
     public void flush() {
-        lock.lock();
         try {
-            if (queue.isEmpty()) {
-                return;
-            }
             List<SensorData> transferData = new ArrayList<>(bufferSize);
-            while (!queue.isEmpty()) {
-                transferData.add(queue.remove());
+            queue.drainTo(transferData);
+
+            if (!transferData.isEmpty()) {
+                writer.writeBufferedData(transferData);
             }
-            writer.writeBufferedData(transferData);
         } catch (Exception e) {
             log.error("Ошибка в процессе записи буфера", e);
-        } finally {
-            lock.unlock();
         }
     }
 
