@@ -34,17 +34,16 @@ public class MessageController {
     @MessageMapping("/message.{roomId}")
     public void getMessage(@DestinationVariable("roomId") String roomId, Message message) {
         logger.info("get message:{}, roomId:{}", message, roomId);
-        saveMessage(roomId, message).subscribe(
-                msgId -> {
+        saveMessage(roomId, message)
+                .onErrorResume(throwable -> {
+                    template.convertAndSend(TOPIC_TEMPLATE + roomId, new Message("Message sending is forbidden for this room."));
+                    return Mono.empty();
+                })
+                .subscribe(msgId -> {
                     logger.info("message send id:{}", msgId);
-                    if (msgId == -1L) {
-                        template.convertAndSend(TOPIC_TEMPLATE + roomId, new Message("This room for observing only. Message sending prohibited"));
-                    } else {
-                        template.convertAndSend(
-                                String.format("%s%s", TOPIC_TEMPLATE, roomId), new Message(HtmlUtils.htmlEscape(message.messageStr())));
-                    }
+                    template.convertAndSend(
+                            TOPIC_TEMPLATE + roomId, new Message(HtmlUtils.htmlEscape(message.messageStr())));
                 });
-
     }
 
     @EventListener
@@ -85,7 +84,13 @@ public class MessageController {
                 .uri(String.format("/msg/%s", roomId))
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(message)
-                .exchangeToMono(response -> response.bodyToMono(Long.class));
+                .exchangeToMono(response -> {
+                    if (response.statusCode().equals(HttpStatus.OK)) {
+                        return response.bodyToMono(Long.class);
+                    } else {
+                        return response.createException().flatMap(Mono::error);
+                    }
+                });
     }
 
     private Flux<Message> getMessagesByRoomId(long roomId) {
