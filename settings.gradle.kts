@@ -16,6 +16,8 @@ include("L25-di:homework")
 include("L24-webServer")
 include("L28-springDataJdbc")
 include("L31-executors")
+include("L33-concurrentCollections:QueueDemo")
+
 
 pluginManagement {
     val jgitver: String by settings
