@@ -38,6 +38,7 @@ allprojects {
     val jmh: String by project
     val reflections: String by project
     val commonsCli: String by project
+    val grpc: String by project
 
     apply(plugin = "io.spring.dependency-management")
     dependencyManagement {
@@ -54,6 +55,10 @@ allprojects {
             dependency("org.openjdk.jmh:jmh-generator-annprocess:$jmh")
             dependency("org.reflections:reflections:$reflections")
             dependency("commons-cli:commons-cli:$commonsCli")
+
+            dependency("io.grpc:grpc-netty:$grpc")
+            dependency("io.grpc:grpc-protobuf:$grpc")
+            dependency("io.grpc:grpc-stub:$grpc")
         }
     }
 
