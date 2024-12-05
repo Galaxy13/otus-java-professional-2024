@@ -34,7 +34,7 @@ public class DataStoreR2dbcWithSpecialRoom implements DataStore {
     @Override
     public Mono<Message> saveMessage(Message message) {
         if (Integer.parseInt(message.roomId()) == specialRoomId) {
-            throw new MessageForbiddenException(specialRoomId);
+            return Mono.error(new MessageForbiddenException(specialRoomId));
         }
         return wrappedDataStore.saveMessage(message);
     }
