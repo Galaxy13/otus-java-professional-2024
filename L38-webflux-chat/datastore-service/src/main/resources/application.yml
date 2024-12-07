@@ -1,6 +1,5 @@
 server:
   port: 8081
-  specialRoomId: 1408
 
 spring:
   r2dbc:
