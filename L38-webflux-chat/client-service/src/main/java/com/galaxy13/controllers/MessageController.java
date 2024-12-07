@@ -34,16 +34,14 @@ public class MessageController {
     @MessageMapping("/message.{roomId}")
     public void getMessage(@DestinationVariable("roomId") String roomId, Message message) {
         logger.info("get message:{}, roomId:{}", message, roomId);
+        if (roomId.equals("1408")) {
+            template.convertAndSend(TOPIC_TEMPLATE + roomId, new Message("Message sending is forbidden for this room."));
+            return;
+        }
         saveMessage(roomId, message)
-                .onErrorResume(throwable -> {
-                    template.convertAndSend(TOPIC_TEMPLATE + roomId, new Message("Message sending is forbidden for this room."));
-                    return Mono.empty();
-                })
-                .subscribe(msgId -> {
-                    logger.info("message send id:{}", msgId);
-                    template.convertAndSend(
-                            TOPIC_TEMPLATE + roomId, new Message(HtmlUtils.htmlEscape(message.messageStr())));
-                });
+                .subscribe(msgId -> logger.info("message send id:{}", msgId));
+        template.convertAndSend(
+                TOPIC_TEMPLATE + roomId, new Message(HtmlUtils.htmlEscape(message.messageStr())));
     }
 
     @EventListener

@@ -6,10 +6,8 @@ import com.galaxy13.service.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
@@ -32,8 +30,6 @@ public class DataController {
         var msgId = Mono.just(new Message(null, roomId, messageStr))
                 .doOnNext(msg -> log.info("messageFromChat:{}", msg))
                 .flatMap(dataStore::saveMessage)
-                .onErrorResume(Exception.class,
-                        error -> Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN)))
                 .publishOn(workerPool)
                 .doOnNext(msgSaved -> log.info("msgSaved id:{}", msgSaved.id()))
                 .map(Message::id)
